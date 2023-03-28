@@ -37,7 +37,7 @@ fun orderUpdates(esopType: String, saleQuantity:BigInteger, salePrice:BigInteger
                         if(seller.userName==username)
                         {
                             seller.inventory[0].locked -= saleQuantity
-                            seller.wallet.free+=saleQuantity* salePrice
+                            seller.wallet.free+=((0.98).toBigDecimal()*(saleQuantity* salePrice).toBigDecimal()).toBigInteger()
                         }
                     }
                 }
@@ -52,7 +52,7 @@ fun orderUpdates(esopType: String, saleQuantity:BigInteger, salePrice:BigInteger
                 for (seller in usersArray) {
                     if (seller.userName == username) {
                         seller.inventory[1].locked -= saleQuantity
-                        seller.wallet.free += saleQuantity* salePrice
+                        seller.wallet.free += ((0.98).toBigDecimal()*(saleQuantity* salePrice).toBigDecimal()).toBigInteger()
                         break
                     }
                 }

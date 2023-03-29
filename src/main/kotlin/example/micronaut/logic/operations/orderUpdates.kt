@@ -37,7 +37,10 @@ fun orderUpdates(esopType: String, saleQuantity:BigInteger, salePrice:BigInteger
                         if(seller.userName==username)
                         {
                             seller.inventory[0].locked -= saleQuantity
-                            seller.wallet.free+=((0.98).toBigDecimal()*(saleQuantity* salePrice).toBigDecimal()).toBigInteger()
+                            var amountFree = ((0.98).toBigDecimal()*(saleQuantity* salePrice).toBigDecimal()).toBigInteger()
+                            var transactionFee = ((0.02).toBigDecimal()*(saleQuantity* salePrice).toBigDecimal()).toBigInteger()
+                            seller.wallet.free+=amountFree
+                            addTransactionFeeToOrganization(transactionFee)
                         }
                     }
                 }
@@ -51,8 +54,10 @@ fun orderUpdates(esopType: String, saleQuantity:BigInteger, salePrice:BigInteger
                 val username = mappedSellOrders[order]
                 for (seller in usersArray) {
                     if (seller.userName == username) {
-                        seller.inventory[1].locked -= saleQuantity
-                        seller.wallet.free += ((0.98).toBigDecimal()*(saleQuantity* salePrice).toBigDecimal()).toBigInteger()
+                        var amountFree = ((0.98).toBigDecimal()*(saleQuantity* salePrice).toBigDecimal()).toBigInteger()
+                        var transactionFee = ((0.02).toBigDecimal()*(saleQuantity* salePrice).toBigDecimal()).toBigInteger()
+                        seller.wallet.free+=amountFree
+                        addTransactionFeeToOrganization(transactionFee)
                         break
                     }
                 }

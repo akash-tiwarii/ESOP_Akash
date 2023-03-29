@@ -17,6 +17,7 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import com.example.logic.operations.validateInventory
 import com.example.logic.operations.validateWallet
+import example.micronaut.logic.operations.getTransactionFeeToOrganization
 import java.util.*
 
 var noOfOrders=0
@@ -92,6 +93,15 @@ class ESOPController {
         }
     }
 
+    @Get("/admin/org")
+    fun totalTransactionFee(): Any {
+        //        return if(response is ErrorMsgs) {
+//            HttpResponse.badRequest(response)
+//        } else {
+//            HttpResponse.ok(response)
+//        }
+        return "Total Transaction Fee Collected : " + getTransactionFeeToOrganization()
 
+    }
 
 }

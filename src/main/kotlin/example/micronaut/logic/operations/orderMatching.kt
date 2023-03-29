@@ -1,6 +1,5 @@
 package example.micronaut.logic.operations
 
-import com.example.logic.operations.updateFilledOrders
 import com.example.model.OrderResponse
 import com.example.model.OrderResponseSell
 

@@ -68,7 +68,7 @@ fun checkOrder(orderObject: Order, uname: String): Any {
 
                     if (price > BigInteger("0") && qnt > BigInteger("0") && qnt <= user.inventory[0].free) {
                         user.inventory[0].free -= qnt
-                        addEsopsFromFreeToLocked(user,qnt,0)
+                        addEsopsFromFreeToLocked(user, qnt, 0)
                         user.inventory[0].locked += qnt
 
                         return true
@@ -81,7 +81,7 @@ fun checkOrder(orderObject: Order, uname: String): Any {
 
                     if (price > BigInteger("0") && qnt > BigInteger("0") && qnt <= user.inventory[1].free) {
                         user.inventory[1].free -= qnt
-                        addEsopsFromFreeToLocked(user,qnt,1)
+                        addEsopsFromFreeToLocked(user, qnt, 1)
                         user.inventory[1].locked += qnt
                         return true
                     }

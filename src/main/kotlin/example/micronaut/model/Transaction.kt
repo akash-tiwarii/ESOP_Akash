@@ -10,11 +10,12 @@ data class Transaction(
     val transactionType: String,
     val cost: String,
 //    val timestamp: String,
-){
+) {
     companion object {
-        private var currentId : BigInteger = 1.toBigInteger()
+        private var currentId: BigInteger = 1.toBigInteger()
     }
-    val transactionId : BigInteger = currentId++
+
+    val transactionId: BigInteger = currentId++
     val timestamp: String
         get() {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

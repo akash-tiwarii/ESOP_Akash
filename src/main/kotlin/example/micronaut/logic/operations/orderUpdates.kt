@@ -2,6 +2,7 @@ package example.micronaut.logic.operations
 
 import java.math.BigInteger
 import java.math.RoundingMode
+
 fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteger) {
 
     var buyerUsername = ""
@@ -11,7 +12,7 @@ fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteg
             val username = mappedOrders[order]
             for (buyer in usersArray) {
                 if (buyer.userName == username) {
-                    buyerUsername= buyer.userName
+                    buyerUsername = buyer.userName
                     buyer.wallet.locked -= saleQuantity * salePrice
                     buyer.wallet.locked -= saleQuantity * (buyOrders[0].price.toBigInteger() - salePrice)
                     buyer.wallet.free += saleQuantity * (buyOrders[0].price.toBigInteger() - salePrice)
@@ -23,7 +24,7 @@ fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteg
         }
     }
 
-    var sellerUsername : String
+    var sellerUsername: String
 
     //updating sellOrder List
     if (esopType == "NORMAL") {
@@ -35,12 +36,15 @@ fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteg
                         sellerUsername = seller.userName
                         seller.inventory[0].locked -= saleQuantity
 
-                        tradeEsops(buyerUsername,sellerUsername, saleQuantity.toLong(),salePrice,0)
+                        tradeEsops(buyerUsername, sellerUsername, saleQuantity.toLong(), salePrice, 0)
 
                         val amountFree =
-                            ((0.98).toBigDecimal() * (saleQuantity * salePrice).toBigDecimal()).setScale(0,RoundingMode.UP).toBigInteger()
+                            ((0.98).toBigDecimal() * (saleQuantity * salePrice).toBigDecimal()).setScale(
+                                0,
+                                RoundingMode.UP
+                            ).toBigInteger()
                         seller.wallet.free += amountFree
-                        addTransactionFeeToOrganization(saleQuantity * salePrice-amountFree)
+                        addTransactionFeeToOrganization(saleQuantity * salePrice - amountFree)
                     }
                 }
             }
@@ -57,12 +61,15 @@ fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteg
                         sellerUsername = seller.userName
                         seller.inventory[1].locked -= saleQuantity
 
-                        tradeEsops(buyerUsername,sellerUsername, saleQuantity.toLong(),salePrice,1)
+                        tradeEsops(buyerUsername, sellerUsername, saleQuantity.toLong(), salePrice, 1)
 
                         val amountFree =
-                            ((0.98).toBigDecimal() * (saleQuantity * salePrice).toBigDecimal()).setScale(0,RoundingMode.UP).toBigInteger()
+                            ((0.98).toBigDecimal() * (saleQuantity * salePrice).toBigDecimal()).setScale(
+                                0,
+                                RoundingMode.UP
+                            ).toBigInteger()
                         seller.wallet.free += amountFree
-                        addTransactionFeeToOrganization(saleQuantity * salePrice-amountFree)
+                        addTransactionFeeToOrganization(saleQuantity * salePrice - amountFree)
                         break
                     }
                 }

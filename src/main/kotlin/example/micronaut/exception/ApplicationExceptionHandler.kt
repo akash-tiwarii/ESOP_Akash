@@ -1,4 +1,5 @@
 package example.micronaut.exception
+
 import io.micronaut.context.annotation.Requires
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse

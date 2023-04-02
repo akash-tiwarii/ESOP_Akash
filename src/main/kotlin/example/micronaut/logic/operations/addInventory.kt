@@ -53,12 +53,13 @@ fun addInventory(userName: String, type: String, quantity: BigInteger) {
         }
     }
 }
+
 fun addingToInventory(user: AccountInfo, quantity: BigInteger, index: Int) {
     user.inventory[index].free += quantity
     for (i in 1..quantity.toInt()) {
         val esop = Esop(mutableListOf())
         esopIdToTransaction[esop.esopId] = mutableListOf()
-        esopIdToTransaction[esop.esopId]?.add(Transaction(user.userName,"organisation","Performance","0"))
+        esopIdToTransaction[esop.esopId]?.add(Transaction(user.userName, "organisation", "Performance", "0"))
         user.inventory[index].esopsFree.add(esop.esopId)
     }
 }

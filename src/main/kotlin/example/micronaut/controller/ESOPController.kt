@@ -1,13 +1,11 @@
 package example.micronaut.controller
 
 import com.fasterxml.jackson.core.JsonParseException
-import example.micronaut.errors.ErrorMsgs
 import example.micronaut.logic.operations.*
 import example.micronaut.model.*
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
-import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.*
 import io.micronaut.http.hateoas.JsonError
 import java.math.BigInteger
@@ -18,7 +16,7 @@ var noOfOrders = 0
 @Controller
 class ESOPController {
     @Post("/user/register")
-    fun registerUserCaller(@Body reg: Register):HttpResponse<Message>//Register // @ResponseStatus(code = HttpStatus.OK, reason = "OK")
+    fun registerUserCaller(@Body reg: Register): HttpResponse<Message>//Register // @ResponseStatus(code = HttpStatus.OK, reason = "OK")
     {
         reg.email = reg.email.lowercase()
         val response = registerUser(reg)
@@ -31,7 +29,7 @@ class ESOPController {
         ord.type = ord.type.uppercase()
         ord.esopType = ord.esopType.uppercase()
         val response = placeOrder(ord, userName)
-        return  HttpResponse.ok(response)
+        return HttpResponse.ok(response)
     }
 
     @Get("/user/{userName}/accountInformation")
@@ -72,7 +70,7 @@ class ESOPController {
     }
 
     @Get("/esopID/{esopId}")
-    fun allEsopsHeldByUser(@PathVariable esopId: BigInteger): HttpResponse<*>{
+    fun allEsopsHeldByUser(@PathVariable esopId: BigInteger): HttpResponse<*> {
         val response = getTransactionByEsopId(esopId)
         return HttpResponse.ok(response)
     }

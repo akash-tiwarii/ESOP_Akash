@@ -5,28 +5,35 @@ import example.micronaut.exception.ApplicationException
 import example.micronaut.logic.checks.checkUserPresence
 import example.micronaut.model.AccountInfo
 import example.micronaut.model.Transaction
+import example.micronaut.model.UserEsops
 import java.math.BigInteger
-import java.sql.Timestamp
 
 
 val esopIdToTransaction: MutableMap<BigInteger, MutableList<Transaction>> = mutableMapOf()
 
-fun getEsops(username: String): MutableMap<String,MutableList<BigInteger>>{
-    var esopList : MutableMap<String,MutableList<BigInteger>> = mutableMapOf()
+fun getEsops(username: String): MutableList<UserEsops>{
+    val esopList : MutableList<BigInteger> = mutableListOf()
+    val userEsopList : MutableList<UserEsops> = mutableListOf()
     if(!checkUserPresence(username)){
         val errorObject = ErrorMsgs(mutableListOf())
         errorObject.error.add("User not registered")
         throw ApplicationException(errorObject.error.joinToString(separator = ","))
     }
     for(user in usersArray){
-        if(user.userName==username){
-            esopList["NORMAL"] = user.inventory[0].esopsFree
-            esopList["NORMAL"]?.addAll(user.inventory[0].esopsLocked)
-            esopList["PERFORMANCE"] = user.inventory[1].esopsFree
-            esopList["PERFORMANCE"]?.addAll(user.inventory[1].esopsLocked)
+        if(user.userName==username) {
+            esopList.addAll(user.inventory[0].esopsFree)
+            esopList.addAll(user.inventory[0].esopsLocked)
+            esopList.addAll(user.inventory[1].esopsFree)
+            esopList.addAll(user.inventory[1].esopsLocked)
+
+            for(esop in esopList){
+                val transaction = esopIdToTransaction.getValue(esop).last()
+                userEsopList.add(UserEsops(esop.toString(),username,transaction.transactionType,transaction.cost, transaction.timestamp,transaction.transactionId.toString()))
+            }
+
         }
     }
-    return esopList
+    return userEsopList
 
 
 }

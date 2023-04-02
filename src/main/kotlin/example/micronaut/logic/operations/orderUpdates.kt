@@ -4,7 +4,7 @@ import java.math.BigInteger
 import java.math.RoundingMode
 fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteger) {
 
-    var buyerUsername : String = ""
+    var buyerUsername = ""
 
     for (order in mappedOrders.keys) {
         if (order.orderId == buyOrders[0].orderId) {
@@ -37,7 +37,7 @@ fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteg
 
                         tradeEsops(buyerUsername,sellerUsername, saleQuantity.toLong(),salePrice,0)
 
-                        var amountFree =
+                        val amountFree =
                             ((0.98).toBigDecimal() * (saleQuantity * salePrice).toBigDecimal()).setScale(0,RoundingMode.UP).toBigInteger()
                         seller.wallet.free += amountFree
                         addTransactionFeeToOrganization(saleQuantity * salePrice-amountFree)
@@ -59,7 +59,7 @@ fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteg
 
                         tradeEsops(buyerUsername,sellerUsername, saleQuantity.toLong(),salePrice,1)
 
-                        var amountFree =
+                        val amountFree =
                             ((0.98).toBigDecimal() * (saleQuantity * salePrice).toBigDecimal()).setScale(0,RoundingMode.UP).toBigInteger()
                         seller.wallet.free += amountFree
                         addTransactionFeeToOrganization(saleQuantity * salePrice-amountFree)

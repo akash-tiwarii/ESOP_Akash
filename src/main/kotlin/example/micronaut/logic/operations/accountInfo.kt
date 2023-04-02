@@ -2,7 +2,6 @@ package example.micronaut.logic.operations
 
 import example.micronaut.errors.ErrorMsgs
 import example.micronaut.exception.ApplicationException
-import example.micronaut.logic.checks.checkUserPresence
 import example.micronaut.model.AccountInfo
 
 

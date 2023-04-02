@@ -1,8 +1,6 @@
 package example.micronaut.model
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigInteger
-import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

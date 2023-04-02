@@ -5,9 +5,6 @@ import example.micronaut.exception.ApplicationException
 import example.micronaut.logic.checks.checkUserPresence
 import example.micronaut.model.*
 import java.math.BigInteger
-import java.sql.Timestamp
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 fun validateInventory(inventoryObject: AddInventory, userName: String): Message {
     val errorObject = ErrorMsgs(mutableListOf())
@@ -59,7 +56,7 @@ fun addInventory(userName: String, type: String, quantity: BigInteger) {
 fun addingToInventory(user: AccountInfo, quantity: BigInteger, index: Int) {
     user.inventory[index].free += quantity
     for (i in 1..quantity.toInt()) {
-        val esop: Esop = Esop(mutableListOf())
+        val esop = Esop(mutableListOf())
         esopIdToTransaction[esop.esopId] = mutableListOf()
         esopIdToTransaction[esop.esopId]?.add(Transaction(user.userName,"organisation","Performance","0"))
         user.inventory[index].esopsFree.add(esop.esopId)

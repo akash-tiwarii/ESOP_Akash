@@ -77,6 +77,11 @@ class ESOPController {
         return HttpResponse.ok(response)
     }
 
+    @Get("/organisationInfo")
+    fun totalTransactionFee(): Any {
+        return "Total Transaction Fee Collected : " + getTransactionFeeToOrganization()
+    }
+
     @Error
     fun jsonError(request: HttpRequest<*>, e: JsonParseException): HttpResponse<String> {
         val error = "{\"errors\":[\"Invalid JSON format\"]}"

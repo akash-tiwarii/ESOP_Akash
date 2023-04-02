@@ -1,107 +1,111 @@
-package com.example.controller
+package example.micronaut.controller
 
-import com.example.errors.ErrorMsgs
-import com.example.logic.*
-import com.example.logic.checks.*
-import com.example.logic.operations.getHistoryOf
-import com.example.logic.operations.placeOrder
-import com.example.logic.operations.registerUser
-import com.example.model.*
-import com.example.logic.operations.getAccountInfo
+import com.fasterxml.jackson.core.JsonParseException
+import example.micronaut.errors.ErrorMsgs
+import example.micronaut.logic.operations.*
+import example.micronaut.model.*
+import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import io.micronaut.http.MutableHttpResponse
-import io.micronaut.http.annotation.Body
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.PathVariable
-import io.micronaut.http.annotation.Post
-import com.example.logic.operations.validateInventory
-import com.example.logic.operations.validateWallet
-import example.micronaut.logic.operations.getTransactionFeeToOrganization
+import io.micronaut.http.annotation.*
+import io.micronaut.http.hateoas.JsonError
+import java.math.BigInteger
 import java.util.*
 
-var noOfOrders=0
-@Controller
+var noOfOrders = 0
+
+@Controller("/user")
 class ESOPController {
-    @Post("/user/register")
+    @Post("/register")
     fun registerUserCaller(@Body reg: Register): MutableHttpResponse<out Any>? //Register // @ResponseStatus(code = HttpStatus.OK, reason = "OK")
     {
-        reg.email=reg.email.lowercase()
-       val response = registerUser(reg)
-        return if(response is Message) {
+        reg.email = reg.email.lowercase()
+        val response = registerUser(reg)
+        return if (response is Message) {
             HttpResponse.created(response)
         } else {
             HttpResponse.badRequest(response)
         }
     }
 
-    @Post("/user/{userName}/order")
-    fun placeOrderCaller(@Body ord:Order,@PathVariable userName:String):Any    //AccountInfo
+    @Post("/{userName}/order")
+    fun placeOrderCaller(@Body ord: Order, @PathVariable userName: String): Any    //AccountInfo
     {
         ord.type = ord.type.uppercase()
         ord.esopType = ord.esopType.uppercase()
-        val response= placeOrder(ord,userName)
-        return if(response is OrderResponse) {
+        val response = placeOrder(ord, userName)
+        return if (response is OrderResponse) {
             HttpResponse.ok(response)
         } else {
             HttpResponse.badRequest(response)
         }
     }
-    @Get("/user/{userName}/accountInformation")
-    fun getAccountInfoCaller(@PathVariable userName:String):Any  //AccountInfo
+
+    @Get("/{userName}/accountInformation")
+    fun getAccountInfoCaller(@PathVariable userName: String): Any  //AccountInfo
     {
 
-        val response= getAccountInfo(userName)
-        return if(response is AccountInfo) {
+        val response = getAccountInfo(userName)
+        return if (response is AccountInfo) {
             HttpResponse.ok(response)
         } else {
             HttpResponse.badRequest(response)
         }
     }
 
-    @Post("/user/{userName}/inventory")
-    fun validateInventoryCaller(@Body inventoryObject:AddInventory,@PathVariable userName: String):Any       //AddInventory
+    @Post("/{userName}/inventory")
+    fun validateInventoryCaller(
+        @Body inventoryObject: AddInventory,
+        @PathVariable userName: String
+    ): Any       //AddInventory
     {
         inventoryObject.type = inventoryObject.type.uppercase()
-        val response= validateInventory(inventoryObject,userName)
-        return if(response is Message) {
+        val response = validateInventory(inventoryObject, userName)
+        return if (response is Message) {
             HttpResponse.ok(response)
         } else {
             HttpResponse.badRequest(response)
         }
     }
 
-    @Post("/user/{userName}/wallet")
-    fun validateWalletCaller(@Body walletObject:AddWallet,@PathVariable userName: String):Any
-    {
-        val response= validateWallet(walletObject,userName)
-        return if(response is Message) {
+    @Post("/{userName}/wallet")
+    fun validateWalletCaller(@Body walletObject: AddWallet, @PathVariable userName: String): Any {
+        val response = validateWallet(walletObject, userName)
+        return if (response is Message) {
             HttpResponse.ok(response)
         } else {
             HttpResponse.badRequest(response)
         }
     }
 
-    @Get("/user/{userName}/orderHistory")
-    fun historyOperationsCaller(@PathVariable userName: String):Any
-    {
-        val response= getHistoryOf(userName)
-        return if(response is ErrorMsgs) {
+    @Get("/{userName}/orderHistory")
+    fun historyOperationsCaller(@PathVariable userName: String): Any {
+        val response = getHistoryOf(userName)
+        return if (response is ErrorMsgs) {
             HttpResponse.badRequest(response)
         } else {
             HttpResponse.ok(response)
         }
     }
 
-    @Get("/admin/org")
-    fun totalTransactionFee(): Any {
-        //        return if(response is ErrorMsgs) {
-//            HttpResponse.badRequest(response)
-//        } else {
+    @Post("/{userName}/esops")
+    fun allEsopsHeldByUser(@PathVariable userName: String): MutableMap<String, MutableList<BigInteger>> {
+        val response = getEsops(userName)
+//        return if (response is Message) {
 //            HttpResponse.ok(response)
+//        } else {
+//            HttpResponse.badRequest(response)
 //        }
-        return "Total Transaction Fee Collected : " + getTransactionFeeToOrganization()
+        return response
+    }
 
+    @Error
+    fun jsonError(request: HttpRequest<*>, e: JsonParseException): HttpResponse<String> {
+        val error = "{\"errors\":[\"Invalid JSON format\"]}"
+
+        return HttpResponse.status<JsonError>(HttpStatus.BAD_REQUEST, "Fix Your JSON")
+            .body(error)
     }
 
 }

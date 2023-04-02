@@ -18,97 +18,63 @@ var noOfOrders = 0
 @Controller
 class ESOPController {
     @Post("/user/register")
-    fun registerUserCaller(@Body reg: Register): MutableHttpResponse<out Any>? //Register // @ResponseStatus(code = HttpStatus.OK, reason = "OK")
+    fun registerUserCaller(@Body reg: Register):HttpResponse<Message>//Register // @ResponseStatus(code = HttpStatus.OK, reason = "OK")
     {
         reg.email = reg.email.lowercase()
         val response = registerUser(reg)
-        return if (response is Message) {
-            HttpResponse.created(response)
-        } else {
-            HttpResponse.badRequest(response)
-        }
+        return HttpResponse.created(response)
     }
 
     @Post("/user/{userName}/order")
-    fun placeOrderCaller(@Body ord: Order, @PathVariable userName: String): Any    //AccountInfo
+    fun placeOrderCaller(@Body ord: Order, @PathVariable userName: String): HttpResponse<*>     //AccountInfo
     {
         ord.type = ord.type.uppercase()
         ord.esopType = ord.esopType.uppercase()
         val response = placeOrder(ord, userName)
-        return if (response is OrderResponse) {
-            HttpResponse.ok(response)
-        } else {
-            HttpResponse.badRequest(response)
-        }
+        return  HttpResponse.ok(response)
     }
 
     @Get("/user/{userName}/accountInformation")
-    fun getAccountInfoCaller(@PathVariable userName: String): Any  //AccountInfo
+    fun getAccountInfoCaller(@PathVariable userName: String): HttpResponse<*>   //AccountInfo
     {
 
         val response = getAccountInfo(userName)
-        return if (response is AccountInfo) {
-            HttpResponse.ok(response)
-        } else {
-            HttpResponse.badRequest(response)
-        }
+        return HttpResponse.ok(response)
     }
 
     @Post("/user/{userName}/inventory")
     fun validateInventoryCaller(
         @Body inventoryObject: AddInventory,
         @PathVariable userName: String
-    ): Any       //AddInventory
+    ): HttpResponse<*>        //AddInventory
     {
         inventoryObject.type = inventoryObject.type.uppercase()
         val response = validateInventory(inventoryObject, userName)
-        return if (response is Message) {
-            HttpResponse.ok(response)
-        } else {
-            HttpResponse.badRequest(response)
-        }
+        return HttpResponse.created(response)
     }
 
     @Post("/user/{userName}/wallet")
-    fun validateWalletCaller(@Body walletObject: AddWallet, @PathVariable userName: String): Any {
+    fun validateWalletCaller(@Body walletObject: AddWallet, @PathVariable userName: String): HttpResponse<*> {
         val response = validateWallet(walletObject, userName)
-        return if (response is Message) {
-            HttpResponse.ok(response)
-        } else {
-            HttpResponse.badRequest(response)
-        }
+        return HttpResponse.ok(response)
     }
 
     @Get("/user/{userName}/orderHistory")
-    fun historyOperationsCaller(@PathVariable userName: String): Any {
+    fun historyOperationsCaller(@PathVariable userName: String): HttpResponse<*> {
         val response = getHistoryOf(userName)
-        return if (response is ErrorMsgs) {
-            HttpResponse.badRequest(response)
-        } else {
-            HttpResponse.ok(response)
-        }
+        return HttpResponse.ok(response)
     }
 
     @Get("/user/{userName}/esops")
-    fun allEsopsHeldByUser(@PathVariable userName: String): MutableMap<String, MutableList<BigInteger>> {
+    fun allEsopsHeldByUser(@PathVariable userName: String): HttpResponse<*> {
         val response = getEsops(userName)
-//        return if (response is Message) {
-//            HttpResponse.ok(response)
-//        } else {
-//            HttpResponse.badRequest(response)
-//        }
-        return response
+        return HttpResponse.ok(response)
     }
 
     @Get("/esopID/{esopId}")
-    fun allEsopsHeldByUser(@PathVariable esopId: BigInteger): MutableList<Transaction> {
+    fun allEsopsHeldByUser(@PathVariable esopId: BigInteger): HttpResponse<*>{
         val response = getTransactionByEsopId(esopId)
-//        return if (response is Message) {
-//            HttpResponse.ok(response)
-//        } else {
-//            HttpResponse.badRequest(response)
-//        }
-        return response
+        return HttpResponse.ok(response)
     }
 
     @Error

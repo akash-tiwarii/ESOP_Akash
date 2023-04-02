@@ -1,6 +1,7 @@
 package example.micronaut.logic.operations
 
 import example.micronaut.errors.ErrorMsgs
+import example.micronaut.exception.ApplicationException
 import example.micronaut.logic.checks.checkUserPresence
 import example.micronaut.model.*
 import java.math.BigInteger
@@ -8,11 +9,11 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-fun validateInventory(inventoryObject: AddInventory, userName: String): Any {
+fun validateInventory(inventoryObject: AddInventory, userName: String): Message {
     val errorObject = ErrorMsgs(mutableListOf())
     if (!checkUserPresence(userName)) {
         errorObject.error.add("User not registered")
-        return errorObject
+        throw ApplicationException(errorObject.error.joinToString(separator = ","))
     }
     val qnt: BigInteger
     val type = inventoryObject.type
@@ -22,7 +23,7 @@ fun validateInventory(inventoryObject: AddInventory, userName: String): Any {
     } catch (e: Exception) {
         errorObject.error.add("Invalid field name or value for the field 'quantity'")
         errorObject.error.add("Inventory should be a positive Integer not exceeding 9223372036854775806")
-        return errorObject
+        throw ApplicationException(errorObject.error.joinToString(separator = ","))
     }
 
     if (!(qnt > BigInteger("0") && qnt <= BigInteger("9223372036854775806"))) {
@@ -34,7 +35,7 @@ fun validateInventory(inventoryObject: AddInventory, userName: String): Any {
     }
 
     if (errorObject.error.size > 0)
-        return errorObject
+        throw ApplicationException(errorObject.error.joinToString(separator = ","))
 
     addInventory(userName, type, qnt)
 

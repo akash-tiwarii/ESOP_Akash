@@ -8,6 +8,7 @@ fun addTransactionFeeToOrganization(fee: BigInteger): BigInteger {
     totalTransactionFee += fee
     return totalTransactionFee
 }
+
 fun getTransactionFeeToOrganization(): BigInteger {
     return totalTransactionFee
 }

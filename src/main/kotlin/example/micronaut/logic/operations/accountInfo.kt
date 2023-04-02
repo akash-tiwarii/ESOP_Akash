@@ -1,26 +1,21 @@
-package com.example.logic.operations
-import com.example.errors.ErrorMsgs
-import com.example.logic.checks.checkUserPresence
+package example.micronaut.logic.operations
+
+import example.micronaut.errors.ErrorMsgs
+import example.micronaut.exception.ApplicationException
+import example.micronaut.logic.checks.checkUserPresence
+import example.micronaut.model.AccountInfo
 
 
-fun getAccountInfo(userName:String):Any{
-    return if(checkUserPresence(userName))
-        getUserInfo(userName)
-    else
-    {
-        val errorObject=ErrorMsgs(mutableListOf())
-        errorObject.error.add("User not registered")
-        return errorObject
-    }
-
-}
-
-fun getUserInfo(userName:String):Any
-{
+fun getAccountInfo(userName:String): AccountInfo {
     for(user in usersArray)
     {
         if(user.userName==userName)
             return user
     }
-    return false
+
+
+    val errorObject=ErrorMsgs(mutableListOf())
+    errorObject.error.add("User not registered")
+    throw ApplicationException(errorObject.error.joinToString(separator = ","))
+
 }

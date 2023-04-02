@@ -1,23 +1,21 @@
-package com.example.logic.operations
+package example.micronaut.logic.operations
 
-import com.example.errors.ErrorMsgs
-import com.example.logic.checks.checkUserPresence
-import com.example.model.OrderFilled
-import com.example.model.OrderResponseSell
+import example.micronaut.errors.ErrorMsgs
+import example.micronaut.exception.ApplicationException
+import example.micronaut.logic.checks.checkUserPresence
+import example.micronaut.model.OrderFilled
 
-fun getHistoryOf(username:String):Any{
+fun getHistoryOf(username: String): List<OrderFilled> {
 
-    if(!checkUserPresence(username))
-    {
-        val errorObject=ErrorMsgs(mutableListOf())
+    if (!checkUserPresence(username)) {
+        val errorObject = ErrorMsgs(mutableListOf())
         errorObject.error.add("User not registered")
-        return errorObject
+        throw ApplicationException(errorObject.error.joinToString(separator = ","))
     }
 
-    var historyList= mutableListOf<OrderFilled>()
-    for(orderFilled in orderMap.keys)
-    {
-        if(orderMap[orderFilled]==username) {
+    var historyList = mutableListOf<OrderFilled>()
+    for (orderFilled in orderMap.keys) {
+        if (orderMap[orderFilled] == username) {
             historyList.add(orderFilled)
         }
     }

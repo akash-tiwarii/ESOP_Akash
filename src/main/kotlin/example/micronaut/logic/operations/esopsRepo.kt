@@ -1,5 +1,8 @@
 package example.micronaut.logic.operations
 
+import example.micronaut.errors.ErrorMsgs
+import example.micronaut.exception.ApplicationException
+import example.micronaut.logic.checks.checkUserPresence
 import example.micronaut.model.AccountInfo
 import example.micronaut.model.Transaction
 import java.math.BigInteger
@@ -10,6 +13,11 @@ val esopIdToTransaction: MutableMap<BigInteger, MutableList<Transaction>> = muta
 
 fun getEsops(username: String): MutableMap<String,MutableList<BigInteger>>{
     var esopList : MutableMap<String,MutableList<BigInteger>> = mutableMapOf()
+    if(!checkUserPresence(username)){
+        val errorObject = ErrorMsgs(mutableListOf())
+        errorObject.error.add("User not registered")
+        throw ApplicationException(errorObject.error.joinToString(separator = ","))
+    }
     for(user in usersArray){
         if(user.userName==username){
             esopList["NORMAL"] = user.inventory[0].esopsFree
@@ -19,6 +27,8 @@ fun getEsops(username: String): MutableMap<String,MutableList<BigInteger>>{
         }
     }
     return esopList
+
+
 }
 
 fun addEsopsFromFreeToLocked(user: AccountInfo, quantity: BigInteger, typeOfEsop: Int){

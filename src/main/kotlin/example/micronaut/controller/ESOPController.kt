@@ -15,9 +15,9 @@ import java.util.*
 
 var noOfOrders = 0
 
-@Controller("/user")
+@Controller
 class ESOPController {
-    @Post("/register")
+    @Post("/user/register")
     fun registerUserCaller(@Body reg: Register): MutableHttpResponse<out Any>? //Register // @ResponseStatus(code = HttpStatus.OK, reason = "OK")
     {
         reg.email = reg.email.lowercase()
@@ -29,7 +29,7 @@ class ESOPController {
         }
     }
 
-    @Post("/{userName}/order")
+    @Post("/user/{userName}/order")
     fun placeOrderCaller(@Body ord: Order, @PathVariable userName: String): Any    //AccountInfo
     {
         ord.type = ord.type.uppercase()
@@ -42,7 +42,7 @@ class ESOPController {
         }
     }
 
-    @Get("/{userName}/accountInformation")
+    @Get("/user/{userName}/accountInformation")
     fun getAccountInfoCaller(@PathVariable userName: String): Any  //AccountInfo
     {
 
@@ -54,7 +54,7 @@ class ESOPController {
         }
     }
 
-    @Post("/{userName}/inventory")
+    @Post("/user/{userName}/inventory")
     fun validateInventoryCaller(
         @Body inventoryObject: AddInventory,
         @PathVariable userName: String
@@ -69,7 +69,7 @@ class ESOPController {
         }
     }
 
-    @Post("/{userName}/wallet")
+    @Post("/user/{userName}/wallet")
     fun validateWalletCaller(@Body walletObject: AddWallet, @PathVariable userName: String): Any {
         val response = validateWallet(walletObject, userName)
         return if (response is Message) {
@@ -79,7 +79,7 @@ class ESOPController {
         }
     }
 
-    @Get("/{userName}/orderHistory")
+    @Get("/user/{userName}/orderHistory")
     fun historyOperationsCaller(@PathVariable userName: String): Any {
         val response = getHistoryOf(userName)
         return if (response is ErrorMsgs) {
@@ -89,9 +89,20 @@ class ESOPController {
         }
     }
 
-    @Post("/{userName}/esops")
+    @Get("/user/{userName}/esops")
     fun allEsopsHeldByUser(@PathVariable userName: String): MutableMap<String, MutableList<BigInteger>> {
         val response = getEsops(userName)
+//        return if (response is Message) {
+//            HttpResponse.ok(response)
+//        } else {
+//            HttpResponse.badRequest(response)
+//        }
+        return response
+    }
+
+    @Get("/esopID/{esopId}")
+    fun allEsopsHeldByUser(@PathVariable esopId: BigInteger): MutableList<Transaction> {
+        val response = getTransactionByEsopId(esopId)
 //        return if (response is Message) {
 //            HttpResponse.ok(response)
 //        } else {

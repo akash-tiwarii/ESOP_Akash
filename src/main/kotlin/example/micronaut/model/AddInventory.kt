@@ -1,6 +1,9 @@
-package com.example.model
+package example.micronaut.model
 
-data class AddInventory (
-    var type:String="",
-    var quantity:String=""
+import com.fasterxml.jackson.annotation.JsonIgnore
+
+data class AddInventory(
+    var type: String = "",
+    var quantity: String = "",
+
 )

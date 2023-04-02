@@ -1,3 +1,3 @@
-package com.example.errors
+package example.micronaut.errors
 
-data class ErrorMsgs(var error:MutableList<String>)
+data class ErrorMsgs(var error: MutableList<String>)

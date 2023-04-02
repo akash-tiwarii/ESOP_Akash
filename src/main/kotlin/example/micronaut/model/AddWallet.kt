@@ -1,3 +1,3 @@
-package com.example.model
+package example.micronaut.model
 
-data class AddWallet(var amount:String="")
+data class AddWallet(var amount: String = "")

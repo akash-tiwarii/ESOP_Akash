@@ -55,14 +55,12 @@ fun addInventory(userName: String, type: String, quantity: BigInteger) {
         }
     }
 }
-val currentDateTime = LocalDateTime.now()
-val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-val timestamp = currentDateTime.format(formatter)
 fun addingToInventory(user: AccountInfo, quantity: BigInteger, index: Int) {
     user.inventory[index].free += quantity
     for (i in 1..quantity.toInt()) {
         val esop: Esop = Esop(mutableListOf())
-        esopIdToTransaction[esop.esopId] = mutableListOf(Transaction(user.userName,"0","Performance","0", timestamp))
+        esopIdToTransaction[esop.esopId] = mutableListOf()
+        esopIdToTransaction[esop.esopId]?.add(Transaction(user.userName,"organisation","Performance","0"))
         user.inventory[index].esopsFree.add(esop.esopId)
     }
 }

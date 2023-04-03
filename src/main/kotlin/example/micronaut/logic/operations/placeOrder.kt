@@ -26,7 +26,7 @@ fun placeOrder(ord: Order, username: String): Any {
             newOrder = OrderResponse(noOfOrders.toString(), ord.quantity, ord.type, ord.price)
             orderMap[OrderFilled(
                 noOfOrders.toString(),
-                "NA",
+                ord.esopType,
                 newOrder.quantity,
                 newOrder.type,
                 newOrder.price,

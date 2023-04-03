@@ -29,7 +29,7 @@ class ESOPController {
         ord.type = ord.type.uppercase()
         ord.esopType = ord.esopType.uppercase()
         val response = placeOrder(ord, userName)
-        return HttpResponse.ok(response)
+        return HttpResponse.created(response)
     }
 
     @Get("/user/{userName}/accountInformation")
@@ -54,7 +54,7 @@ class ESOPController {
     @Post("/user/{userName}/wallet")
     fun validateWalletCaller(@Body walletObject: AddWallet, @PathVariable userName: String): HttpResponse<*> {
         val response = validateWallet(walletObject, userName)
-        return HttpResponse.ok(response)
+        return HttpResponse.created(response)
     }
 
     @Get("/user/{userName}/orderHistory")

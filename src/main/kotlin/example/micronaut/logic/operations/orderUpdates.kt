@@ -19,8 +19,8 @@ fun orderUpdates(esopType: EsopType, saleQuantity: BigInteger, salePrice: BigInt
                 if (buyer.userName == username) {
                     buyerUsername = buyer.userName
                     buyer.wallet.locked -= saleQuantity * salePrice
-                    buyer.wallet.locked -= saleQuantity * (buyOrders[0].price.toBigInteger() - salePrice)
-                    buyer.wallet.free += saleQuantity * (buyOrders[0].price.toBigInteger() - salePrice)
+                    buyer.wallet.locked -= saleQuantity * (buyOrders[0].price - salePrice)
+                    buyer.wallet.free += saleQuantity * (buyOrders[0].price - salePrice)
                     buyer.inventory[0].free += saleQuantity
 
                     break
@@ -32,7 +32,7 @@ fun orderUpdates(esopType: EsopType, saleQuantity: BigInteger, salePrice: BigInt
     var sellerUsername: String
 
     //updating sellOrder List
-    if (esopType == "NORMAL") {
+    if (esopType == EsopType.NORMAL) {
         for (order in mappedSellOrders.keys) {
             if (order.orderId == sellOrdersNormal[0].orderId) {
                 val username = mappedSellOrders[order]

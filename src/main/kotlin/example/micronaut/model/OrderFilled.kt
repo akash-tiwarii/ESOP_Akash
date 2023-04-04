@@ -5,9 +5,9 @@ import java.math.BigInteger
 class OrderFilled(
     var orderId: String,
     var esopType: EsopType?,
-    var quantity: String,
+    var quantity: BigInteger,
     var type: OrderType,
-    var price: String,
+    var price: BigInteger,
     var filled: ArrayList<Filled>
 )
 

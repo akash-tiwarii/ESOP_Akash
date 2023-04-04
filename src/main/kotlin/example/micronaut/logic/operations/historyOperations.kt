@@ -1,6 +1,6 @@
 package example.micronaut.logic.operations
 
-import example.micronaut.errors.ErrorMsgs
+import example.micronaut.errors.Error
 import example.micronaut.exception.ApplicationException
 import example.micronaut.logic.checks.checkUserPresence
 import example.micronaut.model.OrderFilled
@@ -8,9 +8,9 @@ import example.micronaut.model.OrderFilled
 fun getHistoryOf(username: String): List<OrderFilled> {
 
     if (!checkUserPresence(username)) {
-        val errorObject = ErrorMsgs(mutableListOf())
-        errorObject.error.add("User not registered")
-        throw ApplicationException(errorObject.error.joinToString(separator = ","))
+        val errorObject = Error(mutableListOf())
+        errorObject.messages.add("User not registered")
+        throw ApplicationException(errorObject.messages.joinToString(separator = ","))
     }
 
     var historyList = mutableListOf<OrderFilled>()

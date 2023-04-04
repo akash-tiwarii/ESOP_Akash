@@ -1,12 +1,12 @@
 package example.micronaut.logic.operations
 
-import example.micronaut.errors.ErrorMsgs
+import example.micronaut.errors.Error
 import example.micronaut.logic.checks.checkUserPresence
 
 fun updateOrDeleteQuantity(username: String, orderId: String) {
-    val errorObject = ErrorMsgs(mutableListOf())
+    val errorObject = Error(mutableListOf())
     if (!checkUserPresence(username)) {
-        errorObject.error.add("User not registered")
+        errorObject.messages.add("User not registered")
 //        throw ApplicationException(errorObject.error.joinToString(separator = ","))
     }
 //    if(!checkOrderPresence(orderId)){

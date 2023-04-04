@@ -1,6 +1,6 @@
 package example.micronaut.logic.operations
 
-import example.micronaut.errors.ErrorMsgs
+import example.micronaut.errors.Error
 import example.micronaut.exception.ApplicationException
 import example.micronaut.logic.checks.checkUserPresence
 import example.micronaut.model.AccountInfo
@@ -16,9 +16,9 @@ fun getEsops(username: String): MutableList<UserEsops> {
     val esopList: MutableList<BigInteger> = mutableListOf()
     val userEsopList: MutableList<UserEsops> = mutableListOf()
     if (!checkUserPresence(username)) {
-        val errorObject = ErrorMsgs(mutableListOf())
-        errorObject.error.add("User not registered")
-        throw ApplicationException(errorObject.error.joinToString(separator = ","))
+        val errorObject = Error(mutableListOf())
+        errorObject.messages.add("User not registered")
+        throw ApplicationException(errorObject.messages.joinToString(separator = ","))
     }
     for (user in usersArray) {
         if (user.userName == username) {

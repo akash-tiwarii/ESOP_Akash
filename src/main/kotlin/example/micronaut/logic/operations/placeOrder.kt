@@ -1,7 +1,7 @@
 package example.micronaut.logic.operations
 
 import example.micronaut.controller.noOfOrders
-import example.micronaut.logic.checks.checkOrder
+import example.micronaut.logic.checks.hasSuccessfullyLockMoneyAndInventoryForValidOrder
 import example.micronaut.model.*
 
 
@@ -15,7 +15,7 @@ var sellOrdersPerformance = mutableListOf<OrderResponse>()
 var orderMap = HashMap<OrderFilled, String>()
 
 fun placeOrder(ord: Order, username: String): Any {
-    val validOrder = checkOrder(Order(ord.quantity, ord.type, ord.esopType, ord.price), username)
+    val validOrder = hasSuccessfullyLockMoneyAndInventoryForValidOrder(Order(ord.quantity, ord.type, ord.esopType, ord.price), username)
     if (validOrder == true) {
         noOfOrders++
         val newOrder: Any

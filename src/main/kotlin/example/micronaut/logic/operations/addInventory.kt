@@ -1,16 +1,16 @@
 package example.micronaut.logic.operations
 
-import example.micronaut.errors.ErrorMsgs
+import example.micronaut.errors.Error
 import example.micronaut.exception.ApplicationException
 import example.micronaut.logic.checks.checkUserPresence
 import example.micronaut.model.*
 import java.math.BigInteger
 
 fun validateInventory(inventoryObject: AddInventory, userName: String): Message {
-    val errorObject = ErrorMsgs(mutableListOf())
+    val errorObject = Error(mutableListOf())
     if (!checkUserPresence(userName)) {
-        errorObject.error.add("User not registered")
-        throw ApplicationException(errorObject.error.joinToString(separator = ","))
+        errorObject.messages.add("User not registered")
+        throw ApplicationException(errorObject.messages.joinToString(separator = ","))
     }
     val quantity: BigInteger
     val type = inventoryObject.type
@@ -18,21 +18,21 @@ fun validateInventory(inventoryObject: AddInventory, userName: String): Message 
     try {
         quantity = inventoryObject.quantity.toBigInteger()
     } catch (e: Exception) {
-        errorObject.error.add("Invalid field name or value for the field 'quantity'")
-        errorObject.error.add("Inventory should be a positive Integer not exceeding 9223372036854775806")
-        throw ApplicationException(errorObject.error.joinToString(separator = ","))
+        errorObject.messages.add("Invalid field name or value for the field 'quantity'")
+        errorObject.messages.add("Inventory should be a positive Integer not exceeding 9223372036854775806")
+        throw ApplicationException(errorObject.messages.joinToString(separator = ","))
     }
 
     if (!(quantity > BigInteger.ZERO && quantity <= BigInteger("9223372036854775806"))) {
-        errorObject.error.add("Inventory should be a positive Integer not exceeding 9223372036854775806")
+        errorObject.messages.add("Inventory should be a positive Integer not exceeding 9223372036854775806")
     }
 
 //    if (type == EsopType.NORMAL && type == EsopType.PERFORMANCE){
 //        errorObject.error.add("Invalid value or field name for 'type' ")
 //    }
 
-    if (errorObject.error.size > 0)
-        throw ApplicationException(errorObject.error.joinToString(separator = ","))
+    if (errorObject.messages.size > 0)
+        throw ApplicationException(errorObject.messages.joinToString(separator = ","))
 
     addInventory(userName, type, quantity)
 

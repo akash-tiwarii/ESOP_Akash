@@ -6,6 +6,7 @@ import example.micronaut.model.*
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
+import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.*
 import io.micronaut.http.hateoas.JsonError
 import java.math.BigInteger
@@ -26,8 +27,8 @@ class ESOPController {
     @Post("/user/{userName}/order")
     fun placeOrderCaller(@Body ord: Order, @PathVariable userName: String): HttpResponse<*>     //AccountInfo
     {
-        ord.type = ord.type.uppercase()
-        ord.esopType = ord.esopType.uppercase()
+        ord.type = ord.type
+        ord.esopType = ord.esopType
         val response = placeOrder(ord, userName)
         return HttpResponse.created(response)
     }
@@ -46,7 +47,7 @@ class ESOPController {
         @PathVariable userName: String
     ): HttpResponse<*>        //AddInventory
     {
-        inventoryObject.type = inventoryObject.type.uppercase()
+        inventoryObject.type = inventoryObject.type
         val response = validateInventory(inventoryObject, userName)
         return HttpResponse.created(response)
     }
@@ -78,6 +79,12 @@ class ESOPController {
     @Get("/organisationInfo")
     fun totalTransactionFee(): Any {
         return "Total Transaction Fee Collected : " + getTransactionFeeToOrganization()
+    }
+
+    @Delete("/user/{username}/order/{orderId}")
+    fun orderCancellation(@PathVariable username: String,@PathVariable orderId: String): HttpResponse<*>? {
+        val response = updateOrDeleteQuantity(username,orderId)
+        return HttpResponse.ok(response)
     }
 
     @Error

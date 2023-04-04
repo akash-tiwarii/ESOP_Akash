@@ -1,11 +1,16 @@
 package example.micronaut.logic.operations
 
+import example.micronaut.model.EsopType
 import java.math.BigInteger
 import java.math.RoundingMode
 
-fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteger) {
+fun orderUpdates(esopType: EsopType, saleQuantity: BigInteger, salePrice: BigInteger) {
 
     var buyerUsername = ""
+
+//    val buyer = mappedOrders.keys.find { orderResponse ->  orderResponse.orderId== buyOrders[0].orderId}
+//    val buyerUser = usersArray.find { orderResponse -> orderResponse.userName== mappedOrders[buyer] }
+//    val seller = mappedSellOrders.keys.find { orderResponse -> orderResponse.orderId==se }
 
     for (order in mappedOrders.keys) {
         if (order.orderId == buyOrders[0].orderId) {
@@ -14,8 +19,8 @@ fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteg
                 if (buyer.userName == username) {
                     buyerUsername = buyer.userName
                     buyer.wallet.locked -= saleQuantity * salePrice
-                    buyer.wallet.locked -= saleQuantity * (buyOrders[0].price.toBigInteger() - salePrice)
-                    buyer.wallet.free += saleQuantity * (buyOrders[0].price.toBigInteger() - salePrice)
+                    buyer.wallet.locked -= saleQuantity * (buyOrders[0].price - salePrice)
+                    buyer.wallet.free += saleQuantity * (buyOrders[0].price - salePrice)
                     buyer.inventory[0].free += saleQuantity
 
                     break
@@ -27,7 +32,7 @@ fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteg
     var sellerUsername: String
 
     //updating sellOrder List
-    if (esopType == "NORMAL") {
+    if (esopType == EsopType.NORMAL) {
         for (order in mappedSellOrders.keys) {
             if (order.orderId == sellOrdersNormal[0].orderId) {
                 val username = mappedSellOrders[order]

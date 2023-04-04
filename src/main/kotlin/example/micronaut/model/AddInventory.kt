@@ -1,7 +1,7 @@
 package example.micronaut.model
 
 data class AddInventory(
-    var type: String = "",
+    var type: EsopType,
     var quantity: String = "",
 
     )

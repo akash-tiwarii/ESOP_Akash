@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter
 data class Transaction(
     val buyerId: String,
     val sellerId: String,
-    val transactionType: String,
+    val transactionType: TransactionType,
     val cost: String,
 //    val timestamp: String,
 ) {

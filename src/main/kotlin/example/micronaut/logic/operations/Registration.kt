@@ -1,6 +1,6 @@
 package example.micronaut.logic.operations
 
-import example.micronaut.errors.ErrorMsgs
+import example.micronaut.errors.Error
 import example.micronaut.exception.ApplicationException
 import example.micronaut.logic.checks.*
 import example.micronaut.model.*
@@ -9,22 +9,22 @@ import java.math.BigInteger
 var usersArray = mutableListOf<AccountInfo>()
 
 fun registerUser(reg: Register): Message {
-    val errorObject = ErrorMsgs(mutableListOf())
+    val errorObject = Error(mutableListOf())
 
     if (!checkPhone(reg.phoneNumber)) {
-        errorObject.error.add("Invalid field name or value for 'phoneNumber'")
+        errorObject.messages.add("Invalid field name or value for 'phoneNumber'")
     }
     if (!checkEmail(reg.email)) {
-        errorObject.error.add("Invalid field name or value for 'email'")
+        errorObject.messages.add("Invalid field name or value for 'email'")
     }
     if (!checkFirstname(reg.firstName)) {
-        errorObject.error.add(("Invalid field name or value for 'firstName'"))
+        errorObject.messages.add(("Invalid field name or value for 'firstName'"))
     }
     if (!checkLastname(reg.lastName)) {
-        errorObject.error.add(("Invalid field name or value for 'lastName'"))
+        errorObject.messages.add(("Invalid field name or value for 'lastName'"))
     }
     if (!checkUsername(reg.username)) {
-        errorObject.error.add(("Invalid field name or value for 'username'"))
+        errorObject.messages.add(("Invalid field name or value for 'username'"))
     }
     //return errorObject
 
@@ -44,7 +44,7 @@ fun registerUser(reg: Register): Message {
         newInventory
     )
 
-    if (checkUser(ob).size == 0 && errorObject.error.size == 0) {
+    if (checkUser(ob).size == 0 && errorObject.messages.size == 0) {
         usersArray.add(ob)
         return Message("Customer registered successfully")
     }
@@ -52,13 +52,13 @@ fun registerUser(reg: Register): Message {
 
     for (uniqueError in checkUser(ob)) {
         if (uniqueError == 1)
-            errorObject.error.add("Customer phone number is already present")
+            errorObject.messages.add("Customer phone number is already present")
         if (uniqueError == 2)
-            errorObject.error.add("Customer email is already present")
+            errorObject.messages.add("Customer email is already present")
         if (uniqueError == 3)
-            errorObject.error.add("Customer user name is already present")
+            errorObject.messages.add("Customer user name is already present")
     }
 
-    throw ApplicationException(errorObject.error.joinToString(separator = ","))
+    throw ApplicationException(errorObject.messages.joinToString(separator = ","))
 
 }

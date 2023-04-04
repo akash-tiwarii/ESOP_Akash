@@ -1,104 +1,125 @@
 package example.micronaut.logic.checks
 
-import example.micronaut.errors.ErrorMsgs
+import example.micronaut.errors.Error
+import example.micronaut.exception.ApplicationException
 import example.micronaut.logic.operations.addEsopsFromFreeToLocked
-import example.micronaut.logic.operations.usersArray
+import example.micronaut.logic.operations.getAccountInfo
+import example.micronaut.model.AccountInfo
+import example.micronaut.model.EsopType
 import example.micronaut.model.Order
+import example.micronaut.model.OrderType
 import java.math.BigInteger
 
-fun checkOrder(orderObject: Order, uname: String): Any {
+fun hasSuccessfullyLockMoneyAndInventoryForValidOrder(order: Order, username: String): Any {
 
-    val errorObject = ErrorMsgs(mutableListOf())
+    val error = Error(mutableListOf())
+    val price = order.price
+    val quantity = order.quantity
 
-    var price = BigInteger("0")
-    var qnt = BigInteger("0")
-
-
-    if (orderObject.type == "BUY" && orderObject.esopType != "") {
-        errorObject.error.add("BUY order cannot have a performance field")
-    }
-    if (orderObject.type == "SELL" && (orderObject.esopType != "PERFORMANCE" && orderObject.esopType != "NORMAL")) {
-        errorObject.error.add("Invalid field name or value for 'esopType' field")
-        errorObject.error.add("Add a valid input for 'esopType' field")
-    }
-    try {
-        qnt = orderObject.quantity.toBigInteger()
-        if (qnt <= BigInteger("0"))
-            throw Exception("")
-    } catch (e: Exception) {
-        errorObject.error.add("Invalid field name or value for the field 'quantity'")
-        errorObject.error.add("Quantity must be positive integers")
-    }
-    try {
-        price = orderObject.price.toBigInteger()
-        if (price <= BigInteger("0"))
-            throw Exception("")
-    } catch (e: Exception) {
-        errorObject.error.add("Invalid field name or value for the field 'price'")
-        errorObject.error.add("Price must be positive integers")
-    }
-    if (errorObject.error.size != 0) {
-        return errorObject
+    if (order.type == OrderType.SELL) {
+        error.messages.addAll(validateSellOrder(order))
+    } else {
+        error.messages.addAll(validateBuyOrder(order))
     }
 
-    var userFound = false
+    if (error.messages.size != 0) {
+        return error
+    }
 
-    for (user in usersArray) {
-        if (uname == user.userName) {
-            userFound = true
-            if (price <= BigInteger("0")) {
-                errorObject.error.add("Price must be positive integer")
+    val user = getAccountInfo(username)
+
+    if (order.type == OrderType.BUY) {
+        if (quantity * price <= user.wallet.free) {
+            updateWalletForBuyer(user, quantity, price)
+            return true
+        } else {
+            error.messages.add("Insufficient balance")
+        }
+    } else if (order.type == OrderType.SELL) {
+        if (order.esopType == EsopType.NORMAL) {
+            if (quantity > user.inventory[0].free)
+                error.messages.add("Insufficient ESOPs in inventory")
+            if (quantity <= user.inventory[0].free) {
+                updateInventoryForNormalSeller(user, quantity)
+                addEsopsFromFreeToLocked(user, quantity, 0)
+                return true
             }
-            if (qnt <= BigInteger("0")) {
-                errorObject.error.add(" Quantity must be positive integer")
-            }
-            if (orderObject.type == "BUY") {
-                if (price > BigInteger("0") && qnt > BigInteger("0") && qnt * price <= user.wallet.free) {
-                    user.wallet.free -= qnt * price
-                    user.wallet.locked += qnt * price
-                    return true
-                } else {
-                    errorObject.error.add("Insufficient balance")
-                }
-            } else if (orderObject.type == "SELL") {
-                // PERFORMANCE_type==NORMAL
-                if (orderObject.esopType == "NORMAL") {
-                    if (qnt > user.inventory[0].free)
-                        errorObject.error.add("Insufficient ESOPs in inventory")
-
-                    if (price > BigInteger("0") && qnt > BigInteger("0") && qnt <= user.inventory[0].free) {
-                        user.inventory[0].free -= qnt
-                        addEsopsFromFreeToLocked(user, qnt, 0)
-                        user.inventory[0].locked += qnt
-
-                        return true
-                    }
-                }
-                // PERFORMANCE_type==PERFORMANCE
-                else {
-                    if (qnt > user.inventory[1].free)
-                        errorObject.error.add("Insufficient ESOPs in inventory")
-
-                    if (price > BigInteger("0") && qnt > BigInteger("0") && qnt <= user.inventory[1].free) {
-                        user.inventory[1].free -= qnt
-                        addEsopsFromFreeToLocked(user, qnt, 1)
-                        user.inventory[1].locked += qnt
-                        return true
-                    }
-
-                }
-            } else {
-                errorObject.error.add("Type must be either BUY or SELL only")
+        } else {
+            if (quantity > user.inventory[1].free)
+                error.messages.add("Insufficient ESOPs in inventory")
+            if (quantity <= user.inventory[1].free) {
+                updateInventoryForPerformanceSeller(user, quantity)
+                addEsopsFromFreeToLocked(user, quantity, 1)
+                return true
             }
         }
+    } else {
+        error.messages.add("Type must be either BUY or SELL only")
+    }
+    throw ApplicationException(error.messages.joinToString(separator = ","))
 
+}
+
+fun updateInventoryForPerformanceSeller(user: AccountInfo, quantity: BigInteger) {
+    user.inventory[1].free -= quantity
+    user.inventory[1].locked += quantity
+}
+
+fun updateInventoryForNormalSeller(user: AccountInfo, quantity: BigInteger) {
+    user.inventory[0].free -= quantity
+    user.inventory[0].locked += quantity
+}
+
+fun updateWalletForBuyer(user: AccountInfo, quantity: BigInteger, price: BigInteger) {
+    user.wallet.free -= quantity * price
+    user.wallet.locked += quantity * price
+}
+
+
+fun validateBuyOrder(order: Order): Collection<String> {
+    val errors = mutableListOf<String>()
+    if (order.type == OrderType.BUY && order.esopType != null) {
+        errors.add("BUY order cannot have a esop type (NORMAL / PERFORMANCE) specified")
+    }
+    errors.addAll(validateQuantity(order.quantity))
+    errors.addAll(validatePrice(order.price))
+
+    return errors
+}
+
+fun validateSellOrder(order: Order): Collection<String> {
+    val errors = mutableListOf<String>()
+    if (isEsopTypeSpecifiedForASellOrder(order)) {
+        errors.add("Invalid field name or value for 'esopType' field")
+        errors.add("Add a valid input for 'esopType' field")
+    }
+    errors.addAll(validateQuantity(order.quantity))
+    errors.addAll(validatePrice(order.price))
+
+    return errors
+}
+
+private fun isEsopTypeSpecifiedForASellOrder(order: Order) =
+    order.type == OrderType.SELL && (order.esopType != EsopType.PERFORMANCE && order.esopType != EsopType.NORMAL)
+
+fun validateQuantity(quantity: BigInteger): Collection<String> {
+    if (quantity <= BigInteger.valueOf(0)) {
+        return mutableListOf(
+            "Invalid field name or value for the field 'quantity'",
+            "Quantity must be positive integers"
+        )
     }
 
-    if (!userFound) {
-        errorObject.error.clear()
-        errorObject.error.add("User not registered")
+    return mutableListOf()
+}
 
+fun validatePrice(price: BigInteger): Collection<String> {
+    if (price <= BigInteger.valueOf(0)) {
+        return mutableListOf(
+            "Invalid field name or value for the field 'price'",
+            "Price must be positive integers"
+        )
     }
-    return errorObject
 
+    return mutableListOf()
 }

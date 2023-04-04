@@ -9,7 +9,7 @@ data class Status(
 data class OrderHistory(
     var orderId: String,
     var quantity: Int,
-    var type: String,
+    var type: OrderType,
     var price: Int,
     var filled: Array<Status>,
     var unfilled: Array<Status>,

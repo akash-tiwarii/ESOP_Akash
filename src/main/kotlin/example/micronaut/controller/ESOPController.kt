@@ -6,6 +6,7 @@ import example.micronaut.model.*
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
+import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.*
 import io.micronaut.http.hateoas.JsonError
 import java.math.BigInteger
@@ -78,6 +79,12 @@ class ESOPController {
     @Get("/organisationInfo")
     fun totalTransactionFee(): Any {
         return "Total Transaction Fee Collected : " + getTransactionFeeToOrganization()
+    }
+
+    @Delete("/user/{username}/order/{orderId}")
+    fun orderCancellation(@PathVariable username: String,@PathVariable orderId: String): HttpResponse<*>? {
+        val response = updateOrDeleteQuantity(username,orderId)
+        return HttpResponse.ok(response)
     }
 
     @Error

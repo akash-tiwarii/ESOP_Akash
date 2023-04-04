@@ -12,41 +12,41 @@ fun validateInventory(inventoryObject: AddInventory, userName: String): Message 
         errorObject.error.add("User not registered")
         throw ApplicationException(errorObject.error.joinToString(separator = ","))
     }
-    val qnt: BigInteger
+    val quantity: BigInteger
     val type = inventoryObject.type
 
     try {
-        qnt = inventoryObject.quantity.toBigInteger()
+        quantity = inventoryObject.quantity.toBigInteger()
     } catch (e: Exception) {
         errorObject.error.add("Invalid field name or value for the field 'quantity'")
         errorObject.error.add("Inventory should be a positive Integer not exceeding 9223372036854775806")
         throw ApplicationException(errorObject.error.joinToString(separator = ","))
     }
 
-    if (!(qnt > BigInteger("0") && qnt <= BigInteger("9223372036854775806"))) {
+    if (!(quantity > BigInteger.ZERO && quantity <= BigInteger("9223372036854775806"))) {
         errorObject.error.add("Inventory should be a positive Integer not exceeding 9223372036854775806")
     }
 
-    if (type == "" || (type != "NORMAL" && type != "PERFORMANCE")) {
-        errorObject.error.add("Invalid value or field name for 'type' ")
-    }
+//    if (type == EsopType.NORMAL && type == EsopType.PERFORMANCE){
+//        errorObject.error.add("Invalid value or field name for 'type' ")
+//    }
 
     if (errorObject.error.size > 0)
         throw ApplicationException(errorObject.error.joinToString(separator = ","))
 
-    addInventory(userName, type, qnt)
+    addInventory(userName, type, quantity)
 
-    return Message("$qnt ${inventoryObject.type} ESOPs added to account")
+    return Message("$quantity ${inventoryObject.type} ESOPs added to account")
 
 }
 
 
-fun addInventory(userName: String, type: String, quantity: BigInteger) {
+fun addInventory(userName: String, type: EsopType, quantity: BigInteger) {
     for (user in usersArray) {
         if (user.userName == userName) {
-            if (type == "NORMAL") {
+            if (type == EsopType.NORMAL) {
                 addingToInventory(user, quantity, 0)
-            } else if (type == "PERFORMANCE") {
+            } else if (type == EsopType.PERFORMANCE) {
                 addingToInventory(user, quantity, 1)
             }
             break
@@ -59,7 +59,14 @@ fun addingToInventory(user: AccountInfo, quantity: BigInteger, index: Int) {
     for (i in 1..quantity.toInt()) {
         val esop = Esop(mutableListOf())
         esopIdToTransaction[esop.esopId] = mutableListOf()
-        esopIdToTransaction[esop.esopId]?.add(Transaction(user.userName, "organisation", "Performance", "0"))
+        esopIdToTransaction[esop.esopId]?.add(
+            Transaction(
+                user.userName,
+                "organisation",
+                TransactionType.PERFROMANCE,
+                "0"
+            )
+        )
         user.inventory[index].esopsFree.add(esop.esopId)
     }
 }

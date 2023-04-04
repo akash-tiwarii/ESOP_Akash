@@ -5,6 +5,7 @@ import example.micronaut.exception.ApplicationException
 import example.micronaut.logic.checks.checkUserPresence
 import example.micronaut.model.AccountInfo
 import example.micronaut.model.Transaction
+import example.micronaut.model.TransactionType
 import example.micronaut.model.UserEsops
 import java.math.BigInteger
 
@@ -59,8 +60,7 @@ fun addEsopsFromFreeToLocked(user: AccountInfo, quantity: BigInteger, typeOfEsop
 fun tradeEsops(buyer: String, seller: String, quantity: Long, price: BigInteger, esopType: Int) {
     val buyerUser = getAccountInfo(buyer)
     val sellerUser = getAccountInfo(seller)
-    val transactionType = "Trade"
-    val transaction = Transaction(buyerUser.userName, sellerUser.userName, transactionType, price.toString())
+    val transaction = Transaction(buyerUser.userName, sellerUser.userName, TransactionType.TRADE, price.toString())
     for (i in 1..quantity) {
         val esop = sellerUser.inventory[esopType].esopsLocked.removeAt(0)
         esopIdToTransaction[esop]?.add(transaction)

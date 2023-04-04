@@ -1,8 +1,10 @@
 package example.micronaut.model
 
+import java.math.BigInteger
+
 data class Order(
-    var quantity: String,
-    var type: String,
-    var esopType: String = "",
-    var price: String
+    var quantity: BigInteger,
+    var type: OrderType,
+    var esopType: EsopType? = null,
+    var price: BigInteger
 )

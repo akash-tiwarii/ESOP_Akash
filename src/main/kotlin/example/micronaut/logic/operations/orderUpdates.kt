@@ -1,11 +1,16 @@
 package example.micronaut.logic.operations
 
+import example.micronaut.model.EsopType
 import java.math.BigInteger
 import java.math.RoundingMode
 
-fun orderUpdates(esopType: String, saleQuantity: BigInteger, salePrice: BigInteger) {
+fun orderUpdates(esopType: EsopType, saleQuantity: BigInteger, salePrice: BigInteger) {
 
     var buyerUsername = ""
+
+//    val buyer = mappedOrders.keys.find { orderResponse ->  orderResponse.orderId== buyOrders[0].orderId}
+//    val buyerUser = usersArray.find { orderResponse -> orderResponse.userName== mappedOrders[buyer] }
+//    val seller = mappedSellOrders.keys.find { orderResponse -> orderResponse.orderId==se }
 
     for (order in mappedOrders.keys) {
         if (order.orderId == buyOrders[0].orderId) {

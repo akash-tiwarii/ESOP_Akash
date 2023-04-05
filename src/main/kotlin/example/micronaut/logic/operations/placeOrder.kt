@@ -14,86 +14,48 @@ var mappedSellOrders = HashMap<OrderResponse, String>()
 var sellOrdersPerformance = mutableListOf<OrderResponse>()
 var orderMap = HashMap<OrderFilled, String>()
 
-fun placeOrder(ord: Order, username: String): Any {
-    val validOrder = hasSuccessfullyLockMoneyAndInventoryForValidOrder(Order(ord.quantity, ord.type, ord.esopType, ord.price), username)
-    if (validOrder == true) {
-        noOfOrders++
-        val newOrder: Any
-        if (ord.type == OrderType.BUY) {
-            newOrder = OrderResponse(
-                orderId = noOfOrders.toString(), quantity = ord.quantity, type = ord.type, price = ord.price
-            )
-            orderMap[OrderFilled(
-                orderId = noOfOrders.toString(),
-                esopType = ord.esopType,
-                quantity = newOrder.quantity,
-                type = newOrder.type,
-                price = newOrder.price,
-                filled = ArrayList()
-            )] = username
+fun placeOrder(ord: Order, username: String): OrderResponse {
+    hasSuccessfullyLockMoneyAndInventoryForValidOrder(Order(ord.quantity, ord.type, ord.esopType, ord.price), username)
+    noOfOrders++
 
-            val orderDetails = OrderResponse(
-                orderId = noOfOrders.toString(), quantity = ord.quantity, type = ord.type, price = ord.price
-            )
-            mappedOrders[newOrder] = username
+    val newOrder = OrderResponse(noOfOrders.toString(), ord.quantity, ord.esopType, ord.type, ord.price)
 
-            buyOrders.add(orderDetails)
-            if (buyOrders.size >= 2) {
-                buyOrders = buyOrders.sortedWith(object : Comparator<OrderResponse> {
-                    override fun compare(o1: OrderResponse, o2: OrderResponse): Int {
-                        if (o1.price < o2.price) {
-                            return 1
-                        }
-                        if (o1.price == o2.price) {
-                            return o1.orderId.toInt() - o2.orderId.toInt()
-                        }
-                        return -1
-                    }
-                }).toMutableList()
-            }
+    orderMap[OrderFilled(
+        noOfOrders.toString(),
+        ord.esopType,
+        newOrder.quantity,
+        newOrder.type,
+        newOrder.price,
+        ArrayList(),
+    )] = username
 
-        } else {
-            newOrder = OrderResponse(noOfOrders.toString(), ord.quantity, ord.esopType, ord.type, ord.price)
-            orderMap[OrderFilled(
-                noOfOrders.toString(), ord.esopType, newOrder.quantity, newOrder.type, newOrder.price, ArrayList()
-            )] = username
-            val orderDetails = OrderResponse(noOfOrders.toString(), ord.quantity, ord.esopType, ord.type, ord.price)
+    val orderDetails = OrderResponse(noOfOrders.toString(), ord.quantity,ord.esopType, ord.type, ord.price)
 
-            mappedSellOrders[newOrder] = username
-            if (ord.esopType == EsopType.NORMAL) sellOrdersNormal.add(orderDetails)
-            else sellOrdersPerformance.add(orderDetails)
+    mappedOrders[newOrder] = username
 
-            if (sellOrdersNormal.size >= 2) {
-                sellOrdersNormal = sellOrdersNormal.sortedWith(object : Comparator<OrderResponse> {
-                    override fun compare(o1: OrderResponse, o2: OrderResponse): Int {
-                        if (o1.price > o2.price) {
-                            return 1
-                        }
-                        if (o1.price == o2.price) {
-                            return o1.orderId.toInt() - o2.orderId.toInt()
-                        }
-                        return -1
-                    }
-                }).toMutableList()
-            }
+    if (ord.type == OrderType.BUY) insertInBuyOrders(orderDetails)
+    else {
 
-            if (sellOrdersPerformance.size >= 2) {
-                sellOrdersPerformance = sellOrdersPerformance.sortedWith(object : Comparator<OrderResponse> {
-                    override fun compare(o1: OrderResponse, o2: OrderResponse): Int {
-                        if (o1.price > o2.price) {
-                            return 1
-                        }
-                        if (o1.price == o2.price) {
-                            return o1.orderId.toInt() - o2.orderId.toInt()
-                        }
-                        return -1
-                    }
-                }).toMutableList()
-            }
-        }
-        orderMatching(sellOrdersPerformance, buyOrders, EsopType.PERFORMANCE)
-        orderMatching(sellOrdersNormal, buyOrders, EsopType.NORMAL)
+        if (ord.esopType == EsopType.NORMAL) addToNormalSellOrders(orderDetails)
+        else addToPerformanceSellOrders(orderDetails)
+    }
+    orderMatching(sellOrdersPerformance, buyOrders, EsopType.PERFORMANCE)
+    orderMatching(sellOrdersNormal, buyOrders, EsopType.NORMAL)
 
-        return newOrder
-    } else return validOrder
+    return newOrder
+}
+
+private fun insertInBuyOrders(order: OrderResponse) {
+    buyOrders.add(order)
+    buyOrders.sortByDescending { it.price }
+
+}
+
+private fun addToNormalSellOrders(order: OrderResponse) {
+    sellOrdersNormal.add(order)
+    sellOrdersNormal.sortByDescending { it.price }
+}
+
+private fun addToPerformanceSellOrders(order: OrderResponse) {
+    sellOrdersPerformance.add(order)
 }

@@ -10,8 +10,12 @@ fun updateFilledOrders(
     salePrice: BigInteger,
     saleQuantity: BigInteger
 ) {
-    orderMap.keys.find { it.orderId == buyOrders[0].orderId }?.filled
-        ?.add(Filled(salePrice, saleQuantity))
-    orderMap.keys.find { it.orderId == sellOrders[0].orderId }
-        ?.filled?.add(Filled(salePrice, saleQuantity))
+
+    for (orderFilled in orderMap.keys) {
+        if (orderFilled.orderId == buyOrders[0].orderId) {
+            orderFilled.filled.add(Filled(salePrice, saleQuantity))
+        } else if (orderFilled.orderId == sellOrders[0].orderId) {
+            orderFilled.filled.add(Filled(salePrice, saleQuantity))
+        }
+    }
 }

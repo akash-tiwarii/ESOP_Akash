@@ -1,84 +1,70 @@
 package example.micronaut.logic.operations
 
+import example.micronaut.controller.totalWealth
+import example.micronaut.exception.ApplicationException
+import example.micronaut.model.AccountInfo
 import example.micronaut.model.EsopType
+import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
 
 fun orderUpdates(esopType: EsopType, saleQuantity: BigInteger, salePrice: BigInteger) {
+    val percentOfMoneyToAdd = 0.98.toBigDecimal()
 
-    var buyerUsername = ""
+    val buyOrder = mappedOrders.keys.find { orderResponse -> orderResponse.orderId == buyOrders[0].orderId }
+    val buyer = usersArray.find { orderResponse -> orderResponse.userName == mappedOrders[buyOrder] }
+        ?: throw ApplicationException("ERROR SHOULDN'T HAVE BEEN DISPLAYED")
+    updateBuyerWalletAndInventory(buyer, salePrice, saleQuantity)
 
-//    val buyer = mappedOrders.keys.find { orderResponse ->  orderResponse.orderId== buyOrders[0].orderId}
-//    val buyerUser = usersArray.find { orderResponse -> orderResponse.userName== mappedOrders[buyer] }
-//    val seller = mappedSellOrders.keys.find { orderResponse -> orderResponse.orderId==se }
+    val sellOrder =
+        if (esopType == EsopType.NORMAL)
+            mappedOrders.keys.find { orderResponse -> orderResponse.orderId == sellOrdersNormal[0].orderId }
+        else mappedOrders.keys.find { orderResponse -> orderResponse.orderId == sellOrdersPerformance[0].orderId }
+            ?: throw ApplicationException("ERROR SHOULDN'T HAVE BEEN DISPLAYED")
 
-    for (order in mappedOrders.keys) {
-        if (order.orderId == buyOrders[0].orderId) {
-            val username = mappedOrders[order]
-            for (buyer in usersArray) {
-                if (buyer.userName == username) {
-                    buyerUsername = buyer.userName
-                    buyer.wallet.locked -= saleQuantity * salePrice
-                    buyer.wallet.locked -= saleQuantity * (buyOrders[0].price - salePrice)
-                    buyer.wallet.free += saleQuantity * (buyOrders[0].price - salePrice)
-                    buyer.inventory[0].free += saleQuantity
+    val seller = usersArray.find { orderResponse -> orderResponse.userName == mappedOrders[sellOrder] }
+        ?: throw ApplicationException("ERROR SHOULDN'T HAVE BEEN DISPLAYED")
 
-                    break
-                }
-            }
-        }
+    if(esopType == EsopType.NORMAL){
+        tradeEsops(buyer.userName,seller.userName,saleQuantity.toLong(),salePrice,0)
+    }else{
+        tradeEsops(buyer.userName,seller.userName,saleQuantity.toLong(),salePrice,1)
     }
 
-    var sellerUsername: String
 
-    //updating sellOrder List
-    if (esopType == EsopType.NORMAL) {
-        for (order in mappedSellOrders.keys) {
-            if (order.orderId == sellOrdersNormal[0].orderId) {
-                val username = mappedSellOrders[order]
-                for (seller in usersArray) {
-                    if (seller.userName == username) {
-                        sellerUsername = seller.userName
-                        seller.inventory[0].locked -= saleQuantity
+    val actualMoneyExchanged: BigInteger =
+        calculateActualMoneyExchanged(saleQuantity, salePrice, percentOfMoneyToAdd)
 
-                        tradeEsops(buyerUsername, sellerUsername, saleQuantity.toLong(), salePrice, 0)
+    updateSellerWalletAndInventory(seller, saleQuantity, actualMoneyExchanged, sellOrder?.esopType!!)
 
-                        val amountFree =
-                            ((0.98).toBigDecimal() * (saleQuantity * salePrice).toBigDecimal()).setScale(
-                                0,
-                                RoundingMode.UP
-                            ).toBigInteger()
-                        seller.wallet.free += amountFree
-                        addTransactionFeeToOrganization(saleQuantity * salePrice - amountFree)
-                    }
-                }
-            }
-        }
-    }
+    totalWealth += ((saleQuantity * salePrice) - actualMoneyExchanged)
+}
 
-    //change need to be done here
-    else {
-        for (order in mappedSellOrders.keys) {
-            if (order.orderId == sellOrdersPerformance[0].orderId) {
-                val username = mappedSellOrders[order]
-                for (seller in usersArray) {
-                    if (seller.userName == username) {
-                        sellerUsername = seller.userName
-                        seller.inventory[1].locked -= saleQuantity
+private fun calculateActualMoneyExchanged(
+    saleQuantity: BigInteger,
+    salePrice: BigInteger,
+    percentOfMoneyToAdd: BigDecimal
+): BigInteger {
+    return (saleQuantity.toBigDecimal() * salePrice.toBigDecimal() * percentOfMoneyToAdd).setScale(
+        0, RoundingMode.DOWN
+    ).toBigInteger()
+}
 
-                        tradeEsops(buyerUsername, sellerUsername, saleQuantity.toLong(), salePrice, 1)
+private fun updateSellerWalletAndInventory(
+    seller: AccountInfo,
+    saleQuantity: BigInteger,
+    actualMoneyExchanged: BigInteger,
+    esopType: EsopType
+) {
+    seller.inventory[esopType.ordinal].locked -= saleQuantity
+    seller.wallet.free += actualMoneyExchanged
+}
 
-                        val amountFree =
-                            ((0.98).toBigDecimal() * (saleQuantity * salePrice).toBigDecimal()).setScale(
-                                0,
-                                RoundingMode.UP
-                            ).toBigInteger()
-                        seller.wallet.free += amountFree
-                        addTransactionFeeToOrganization(saleQuantity * salePrice - amountFree)
-                        break
-                    }
-                }
-            }
-        }
-    }
+private fun updateBuyerWalletAndInventory(
+    buyer: AccountInfo,  salePrice: BigInteger,saleQuantity: BigInteger,
+) {
+    buyer.wallet.locked -= saleQuantity * salePrice
+    buyer.wallet.locked -= saleQuantity * (buyOrders[0].price - salePrice)
+    buyer.wallet.free += saleQuantity * (buyOrders[0].price - salePrice)
+    buyer.inventory[0].free += saleQuantity
 }

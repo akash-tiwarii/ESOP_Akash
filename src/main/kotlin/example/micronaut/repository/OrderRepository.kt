@@ -11,10 +11,14 @@ import java.math.BigInteger
 class OrderRepository {
 
     fun cancelOrder(order: OrderCancel, username: String, orderId: Int): Message {
+
+        validQuantity(order.quantity)
+
         val orderHistory = getHistoryOf(username)
         val actualOrder = checkOrderPresence(orderHistory, orderId)
-        val quantityFilled = quantityPartiallyFilledOrCancelled(actualOrder)
-        val quantityRemaining = actualOrder.quantity - quantityFilled
+        val quantityFilled = quantityPartiallyFilled(actualOrder)
+        val quantityCancelled = quantityCancelled(actualOrder)
+        val quantityRemaining = actualOrder.quantity - (quantityFilled + quantityCancelled)
         if (quantityRemaining < order.quantity)
             throw ApplicationException("Cancelled order quantity cannot exceed remaining quantity : $quantityRemaining")
 
@@ -37,13 +41,28 @@ class OrderRepository {
 
     }
 
+    private fun validUsername(username: String) {
+        val user = getAccountInfo(username)
+    }
 
-    private fun quantityPartiallyFilledOrCancelled(order: OrderFilled): BigInteger {
+    private fun validQuantity(quantity: BigInteger) {
+        if (quantity < BigInteger.ZERO || quantity > Long.MAX_VALUE.toBigInteger()) {
+            throw ApplicationException("Quantity should be a positive Integer and less than 9_223_372_036_854_775_807")
+        }
+    }
+
+
+    private fun quantityPartiallyFilled(order: OrderFilled): BigInteger {
         var quantity = BigInteger.ZERO
         for (entity in order.filled) {
             quantity += entity.quantity
         }
-        for(entity in order.cancelled){
+        return quantity
+    }
+
+    private fun quantityCancelled(order: OrderFilled): BigInteger {
+        var quantity = BigInteger.ZERO
+        for (entity in order.filled) {
             quantity += entity.quantity
         }
         return quantity

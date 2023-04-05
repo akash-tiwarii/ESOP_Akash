@@ -75,7 +75,6 @@ fun updateWalletForBuyer(user: AccountInfo, quantity: BigInteger, price: BigInte
     user.wallet.locked += quantity * price
 }
 
-
 fun validateBuyOrder(order: Order): Collection<String> {
     val errors = mutableListOf<String>()
     if (order.type == OrderType.BUY && order.esopType != null) {

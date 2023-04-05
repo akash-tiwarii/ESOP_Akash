@@ -50,9 +50,7 @@ fun getEsops(username: String): MutableList<UserEsops> {
 
 fun addEsopsFromFreeToLocked(user: AccountInfo, quantity: BigInteger, typeOfEsop: Int) {
 
-//    var tempEsopList: MutableList<BigInteger> = mutableListOf()
     for (i in 0 until quantity.toInt()) {
-//        tempEsopList.add(user.inventory[typeOfEsop].esopsFree.removeAt(i))
         user.inventory[typeOfEsop].esopsLocked.add(user.inventory[typeOfEsop].esopsFree.removeAt(0))
     }
 }

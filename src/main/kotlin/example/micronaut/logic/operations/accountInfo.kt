@@ -11,9 +11,7 @@ fun getAccountInfo(userName: String): AccountInfo {
             return user
     }
 
-
     val errorObject = Error(mutableListOf())
     errorObject.messages.add("User not registered")
     throw ApplicationException(errorObject.messages.joinToString(separator = ","))
-
 }

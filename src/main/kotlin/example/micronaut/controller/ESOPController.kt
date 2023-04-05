@@ -13,6 +13,7 @@ import java.math.BigInteger
 import java.util.*
 
 var noOfOrders = 0
+var totalWealth =0.toBigInteger()
 
 @Controller
 class ESOPController {
@@ -78,14 +79,9 @@ class ESOPController {
 
     @Get("/organisationInfo")
     fun totalTransactionFee(): Any {
-        return "Total Transaction Fee Collected : " + getTransactionFeeToOrganization()
+        return "Total Transaction Fee Collected : $totalWealth"
     }
 
-    @Delete("/user/{username}/order/{orderId}")
-    fun orderCancellation(@PathVariable username: String,@PathVariable orderId: String): HttpResponse<*>? {
-        val response = updateOrDeleteQuantity(username,orderId)
-        return HttpResponse.ok(response)
-    }
 
     @Error
     fun jsonError(request: HttpRequest<*>, e: JsonParseException): HttpResponse<String> {

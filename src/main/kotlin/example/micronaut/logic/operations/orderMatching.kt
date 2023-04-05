@@ -2,7 +2,6 @@ package example.micronaut.logic.operations
 
 import example.micronaut.model.EsopType
 import example.micronaut.model.OrderResponse
-import kotlin.math.min
 
 fun orderMatching(sellOrders: MutableList<OrderResponse>, buyOrders: MutableList<OrderResponse>, esopType: EsopType) {
     while (!(sellOrders.size == 0 || buyOrders.size == 0) && buyOrders[0].price >= sellOrders[0].price) {

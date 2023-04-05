@@ -1,6 +1,6 @@
 package example.micronaut.logic.operations
 
-import example.micronaut.controller.totalWealth
+import example.micronaut.controller.totalTransactionFee
 import example.micronaut.exception.ApplicationException
 import example.micronaut.model.AccountInfo
 import example.micronaut.model.EsopType
@@ -37,7 +37,7 @@ fun orderUpdates(esopType: EsopType, saleQuantity: BigInteger, salePrice: BigInt
 
     updateSellerWalletAndInventory(seller, saleQuantity, actualMoneyExchanged, sellOrder?.esopType!!)
 
-    totalWealth += ((saleQuantity * salePrice) - actualMoneyExchanged)
+    totalTransactionFee += ((saleQuantity * salePrice) - actualMoneyExchanged)
 }
 
 private fun calculateActualMoneyExchanged(

@@ -3,20 +3,21 @@ package example.micronaut.controller
 import com.fasterxml.jackson.core.JsonParseException
 import example.micronaut.logic.operations.*
 import example.micronaut.model.*
+import example.micronaut.repository.OrderRepository
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
-import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.*
 import io.micronaut.http.hateoas.JsonError
 import java.math.BigInteger
 import java.util.*
 
 var noOfOrders = 0
-var totalWealth =0.toBigInteger()
+var totalTransactionFee = 0.toBigInteger()
 
 @Controller
 class ESOPController {
+
     @Post("/user/register")
     fun registerUserCaller(@Body reg: Register): HttpResponse<Message>//Register // @ResponseStatus(code = HttpStatus.OK, reason = "OK")
     {
@@ -79,9 +80,16 @@ class ESOPController {
 
     @Get("/organisationInfo")
     fun totalTransactionFee(): Any {
-        return "Total Transaction Fee Collected : $totalWealth"
+        return "Total Transaction Fee Collected : $totalTransactionFee"
     }
 
+
+    @Delete("/user/{userName}/order/{orderId}")
+    fun cancelOrderForGivenId(@Body cancelRequest:OrderCancel, @PathVariable userName: String, @PathVariable orderId: Int):HttpResponse<*>{
+        val orderRepository = OrderRepository()
+        val response = orderRepository.cancelOrder(cancelRequest, userName, orderId)
+        return HttpResponse.ok(response)
+    }
 
     @Error
     fun jsonError(request: HttpRequest<*>, e: JsonParseException): HttpResponse<String> {

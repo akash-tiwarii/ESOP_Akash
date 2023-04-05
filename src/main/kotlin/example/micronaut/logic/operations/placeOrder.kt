@@ -1,5 +1,6 @@
 package example.micronaut.logic.operations
 
+import com.sun.org.apache.bcel.internal.generic.ARRAYLENGTH
 import example.micronaut.controller.noOfOrders
 import example.micronaut.logic.checks.hasSuccessfullyLockMoneyAndInventoryForValidOrder
 import example.micronaut.model.*
@@ -27,6 +28,7 @@ fun placeOrder(ord: Order, username: String): OrderResponse {
         newOrder.type,
         newOrder.price,
         ArrayList(),
+        ArrayList()
     )] = username
 
     val orderDetails = OrderResponse(noOfOrders.toString(), ord.quantity,ord.esopType, ord.type, ord.price)

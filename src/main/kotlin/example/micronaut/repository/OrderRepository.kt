@@ -12,6 +12,7 @@ class OrderRepository {
 
     fun cancelOrder(order: OrderCancel, username: String, orderId: Int): Message {
 
+        validUsername(username)
         validQuantity(order.quantity)
 
         val orderHistory = getHistoryOf(username)
@@ -42,7 +43,7 @@ class OrderRepository {
     }
 
     private fun validUsername(username: String) {
-        val user = getAccountInfo(username)
+        getAccountInfo(username)
     }
 
     private fun validQuantity(quantity: BigInteger) {

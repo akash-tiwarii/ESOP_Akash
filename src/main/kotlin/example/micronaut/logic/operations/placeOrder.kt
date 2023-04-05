@@ -1,6 +1,5 @@
 package example.micronaut.logic.operations
 
-import com.sun.org.apache.bcel.internal.generic.ARRAYLENGTH
 import example.micronaut.controller.noOfOrders
 import example.micronaut.logic.checks.hasSuccessfullyLockMoneyAndInventoryForValidOrder
 import example.micronaut.model.*
@@ -9,7 +8,6 @@ import example.micronaut.model.*
 var mappedOrders = HashMap<OrderResponse, String>()
 var buyOrders = mutableListOf<OrderResponse>()
 var sellOrdersNormal = mutableListOf<OrderResponse>()
-var mappedSellOrders = HashMap<OrderResponse, String>()
 
 //newly added
 var sellOrdersPerformance = mutableListOf<OrderResponse>()
@@ -31,7 +29,7 @@ fun placeOrder(ord: Order, username: String): OrderResponse {
         ArrayList()
     )] = username
 
-    val orderDetails = OrderResponse(noOfOrders.toString(), ord.quantity,ord.esopType, ord.type, ord.price)
+    val orderDetails = OrderResponse(noOfOrders.toString(), ord.quantity, ord.esopType, ord.type, ord.price)
 
     mappedOrders[newOrder] = username
 

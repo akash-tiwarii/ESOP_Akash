@@ -33,7 +33,6 @@ fun validateWallet(walletObject: AddWallet, userName: String): Message {
 
 fun addWallet(userName: String, amt: BigInteger) {
     for (user in usersArray) {
-        if (user.userName == userName)
-            user.wallet.free += amt
+        if (user.userName == userName) user.wallet.free += amt
     }
 }

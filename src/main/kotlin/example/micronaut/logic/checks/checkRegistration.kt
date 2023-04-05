@@ -19,12 +19,9 @@ fun checkEmail(mail: String): Boolean {
 fun checkUser(ob: AccountInfo): MutableList<Int> {
     val uniqueErrors = mutableListOf<Int>()
     for (user in usersArray) {
-        if (ob.phoneNumber == user.phoneNumber)
-            uniqueErrors.add(1)
-        if (ob.email == user.email)
-            uniqueErrors.add(2)
-        if (ob.userName == user.userName)
-            uniqueErrors.add(3)
+        if (ob.phoneNumber == user.phoneNumber) uniqueErrors.add(1)
+        if (ob.email == user.email) uniqueErrors.add(2)
+        if (ob.userName == user.userName) uniqueErrors.add(3)
     }
     return uniqueErrors//unique user
 }

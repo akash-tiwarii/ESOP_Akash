@@ -27,12 +27,7 @@ fun validateInventory(inventoryObject: AddInventory, userName: String): Message 
         errorObject.messages.add("Inventory should be a positive Integer not exceeding 9223372036854775806")
     }
 
-//    if (type == EsopType.NORMAL && type == EsopType.PERFORMANCE){
-//        errorObject.error.add("Invalid value or field name for 'type' ")
-//    }
-
-    if (errorObject.messages.size > 0)
-        throw ApplicationException(errorObject.messages.joinToString(separator = ","))
+    if (errorObject.messages.size > 0) throw ApplicationException(errorObject.messages.joinToString(separator = ","))
 
     addInventory(userName, type, quantity)
 
@@ -61,10 +56,7 @@ fun addingToInventory(user: AccountInfo, quantity: BigInteger, index: Int) {
         esopIdToTransaction[esop.esopId] = mutableListOf()
         esopIdToTransaction[esop.esopId]?.add(
             Transaction(
-                user.userName,
-                "organisation",
-                TransactionType.PERFROMANCE,
-                "0"
+                user.userName, "organisation", TransactionType.PERFROMANCE, "0"
             )
         )
         user.inventory[index].esopsFree.add(esop.esopId)

@@ -94,7 +94,6 @@ class ESOPController {
     @Error
     fun jsonError(request: HttpRequest<*>, e: JsonParseException): HttpResponse<String> {
         val error = "{\"errors\":[\"Invalid JSON format\"]}"
-
         return HttpResponse.status<JsonError>(HttpStatus.BAD_REQUEST, "Fix Your JSON")
             .body(error)
     }

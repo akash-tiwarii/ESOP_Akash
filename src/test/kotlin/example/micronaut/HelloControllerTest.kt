@@ -7,7 +7,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
-import jakarta.inject.Inject
+
 
 @MicronautTest // <1>
 class HelloControllerTest(@Client("/") val client: HttpClient) { // <2>

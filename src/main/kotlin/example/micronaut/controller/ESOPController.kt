@@ -9,12 +9,15 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.*
 import io.micronaut.http.hateoas.JsonError
+import io.micronaut.validation.Validated
 import java.math.BigInteger
 import java.util.*
+import javax.validation.Valid
 
 var noOfOrders = 0
 var totalTransactionFee = 0.toBigInteger()
-
+var totalTaxCollected = 0.toBigInteger()
+@Validated
 @Controller
 class ESOPController {
 
@@ -83,9 +86,13 @@ class ESOPController {
         return "Total Transaction Fee Collected : $totalTransactionFee"
     }
 
+    @Get("/taxCollected")
+    fun totalTaxCollected(): Any {
+        return "Total Transaction Fee Collected : $totalTaxCollected"
+    }
 
     @Delete("/user/{userName}/order/{orderId}")
-    fun cancelOrderForGivenId(@Body cancelRequest:OrderCancel, @PathVariable userName: String, @PathVariable orderId: Int):HttpResponse<*>{
+    fun cancelOrderForGivenId(@Body @Valid cancelRequest:OrderCancel, @PathVariable userName: String, @PathVariable orderId: Int):HttpResponse<*>{
         val orderRepository = OrderRepository()
         val response = orderRepository.cancelOrder(cancelRequest, userName, orderId)
         return HttpResponse.ok(response)

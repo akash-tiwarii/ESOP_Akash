@@ -15,8 +15,8 @@ class OrderRepositoryTest {
     @Test
     fun `order matching for buyer and seller`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 1000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 10.toBigInteger())
@@ -43,8 +43,8 @@ class OrderRepositoryTest {
     @Test
     fun `organization should collect 2 Percent transaction fee after teh transactions`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 1000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 10.toBigInteger())
@@ -70,8 +70,8 @@ class OrderRepositoryTest {
     @Test
     fun `partial order matching for buyer when seller is present`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 1000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 10.toBigInteger())
@@ -99,8 +99,8 @@ class OrderRepositoryTest {
     @Test
     fun `partial order matching for seller when buyer is present`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 1000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 10.toBigInteger())
@@ -140,8 +140,8 @@ class OrderRepositoryTest {
     @Test
     fun `tax deduction from sellers account after every successfull transactions happened`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 100000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 80.toBigInteger())
@@ -168,8 +168,8 @@ class OrderRepositoryTest {
     @Test
     fun `Should get the total tax collected by the government so far`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 100000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 80.toBigInteger())

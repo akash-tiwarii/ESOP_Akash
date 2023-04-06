@@ -13,10 +13,12 @@ class OrderRepository {
     fun cancelOrder(order: OrderCancel, username: String, orderId: Int): Message {
 
         validUsername(username)
-        validQuantity(order.quantity)
 
         val orderHistory = getHistoryOf(username)
         val actualOrder = checkOrderPresence(orderHistory, orderId)
+
+        validQuantity(order.quantity)
+
         val quantityFilled = quantityPartiallyFilled(actualOrder)
         val quantityCancelled = quantityCancelled(actualOrder)
         val quantityRemaining = actualOrder.quantity - (quantityFilled + quantityCancelled)

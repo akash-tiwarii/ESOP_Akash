@@ -17,6 +17,7 @@ import javax.validation.Valid
 var noOfOrders = 0
 var totalTransactionFee = 0.toBigInteger()
 var totalTaxCollected = 0.toBigInteger()
+
 @Validated
 @Controller
 class ESOPController {
@@ -92,7 +93,11 @@ class ESOPController {
     }
 
     @Delete("/user/{userName}/order/{orderId}")
-    fun cancelOrderForGivenId(@Body @Valid cancelRequest:OrderCancel, @PathVariable userName: String, @PathVariable orderId: Int):HttpResponse<*>{
+    fun cancelOrderForGivenId(
+        @Body @Valid cancelRequest: OrderCancel,
+        @PathVariable userName: String,
+        @PathVariable orderId: Int
+    ): HttpResponse<*> {
         val orderRepository = OrderRepository()
         val response = orderRepository.cancelOrder(cancelRequest, userName, orderId)
         return HttpResponse.ok(response)

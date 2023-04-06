@@ -72,8 +72,6 @@ private fun updateSellerWalletAndInventory(
 
     }
 
-
-
     seller.wallet.free += actualMoneyExchanged - totalTaxDeductionAfterTransaction
     totalTaxCollected += totalTaxDeductionAfterTransaction
 }
@@ -86,8 +84,7 @@ fun calculateTaxNormalTransaction(saleQuantity: BigInteger, salePrice: BigIntege
                 0,
                 RoundingMode.UP
             ).toBigInteger()
-        totalTaxDeductionAfterTransaction =
-            if (totalTaxDeductionAfterTransaction > BigInteger("20")) BigInteger("20") else totalTaxDeductionAfterTransaction
+        totalTaxDeductionAfterTransaction = totalTaxDeductionAfterTransaction.min(BigInteger("20"))
     }
     if (saleQuantity > 100.toBigInteger() && saleQuantity <= 50000.toBigInteger()) {
         totalTaxDeductionAfterTransaction =
@@ -95,8 +92,7 @@ fun calculateTaxNormalTransaction(saleQuantity: BigInteger, salePrice: BigIntege
                 0,
                 RoundingMode.UP
             ).toBigInteger()
-        totalTaxDeductionAfterTransaction =
-            if (totalTaxDeductionAfterTransaction > BigInteger("20")) BigInteger("20") else totalTaxDeductionAfterTransaction
+        totalTaxDeductionAfterTransaction = totalTaxDeductionAfterTransaction.min(BigInteger("20"))
     }
     if (saleQuantity > 50000.toBigInteger()) {
         totalTaxDeductionAfterTransaction =
@@ -115,8 +111,7 @@ fun calculateTaxPerformanceTransaction(saleQuantity: BigInteger, salePrice: BigI
                 0,
                 RoundingMode.UP
             ).toBigInteger()
-        totalTaxDeductionAfterTransaction =
-            if (totalTaxDeductionAfterTransaction > BigInteger("50")) BigInteger("50") else totalTaxDeductionAfterTransaction
+        totalTaxDeductionAfterTransaction = totalTaxDeductionAfterTransaction.min(BigInteger("50"))
     }
     if (saleQuantity > 100.toBigInteger() && saleQuantity <= 50000.toBigInteger()) {
         totalTaxDeductionAfterTransaction =
@@ -145,7 +140,6 @@ private fun updateBuyerWalletAndInventory(
 }
 
 fun getTaxCollectedFromTransaction(): BigInteger {
-
     return totalTaxDeductionAfterTransaction
 }
 

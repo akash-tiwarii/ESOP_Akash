@@ -1,26 +1,29 @@
 package example.micronaut.logic.operations
 
-import example.micronaut.model.*
+import example.micronaut.model.EsopType
+import example.micronaut.model.Order
+import example.micronaut.model.OrderType
+import example.micronaut.model.Register
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class PlaceOrderTest{
+class PlaceOrderTest {
 
     @Test
-    fun `not able to place BUY order if the free amount is Insufficient`(){
+    fun `not able to place BUY order if the free amount is Insufficient`() {
 
         try {
-            registerUser(Register("john","doe","9999999999","johndoe1@gmail.com","john1"))
-            registerUser(Register("john","doe","9999999998","johndoe2@gmail.com","john2"))
+            registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+            registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
-            addWallet("john1",100.toBigInteger())
+            addWallet("john1", 100.toBigInteger())
 
             val orderBuyer = Order(quantity = 10.toBigInteger(), type = OrderType.BUY, price = 100.toBigInteger())
             val buyerUsername = "john1"
-            placeOrder(orderBuyer,buyerUsername)
-        }catch (e: Exception){
-            assertEquals("Insufficient balance",e.message)
+            placeOrder(orderBuyer, buyerUsername)
+        } catch (e: Exception) {
+            assertEquals("Insufficient balance", e.message)
 
         }
 
@@ -28,17 +31,22 @@ class PlaceOrderTest{
     }
 
     @Test
-    fun `not able to place SELL order if the free Normal ESOPs are Insufficient`(){
+    fun `not able to place SELL order if the free Normal ESOPs are Insufficient`() {
 
         try {
-            registerUser(Register("john","doe","9999999999","johndoe1@gmail.com","john1"))
-            addInventory("john1",EsopType.NORMAL,100.toBigInteger())
-            val orderSeller = Order(quantity = 10.toBigInteger(), esopType = EsopType.NORMAL ,type = OrderType.SELL, price = 100.toBigInteger())
+            registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+            addInventory("john1", EsopType.NORMAL, 100.toBigInteger())
+            val orderSeller = Order(
+                quantity = 10.toBigInteger(),
+                esopType = EsopType.NORMAL,
+                type = OrderType.SELL,
+                price = 100.toBigInteger()
+            )
             val sellerUsername = "john1"
-            placeOrder(orderSeller,sellerUsername)
+            placeOrder(orderSeller, sellerUsername)
 
-        }catch (e: Exception){
-            assertEquals("Insufficient ESOPs in inventory",e.message)
+        } catch (e: Exception) {
+            assertEquals("Insufficient ESOPs in inventory", e.message)
 
         }
 
@@ -46,17 +54,22 @@ class PlaceOrderTest{
     }
 
     @Test
-    fun `not able to place SELL order if the free Performance ESOPs are Insufficient`(){
+    fun `not able to place SELL order if the free Performance ESOPs are Insufficient`() {
 
         try {
-            registerUser(Register("john","doe","9999999999","johndoe1@gmail.com","john1"))
-            addInventory("john1",EsopType.PERFORMANCE,100.toBigInteger())
-            val orderSeller = Order(quantity = 10.toBigInteger(), esopType = EsopType.NORMAL ,type = OrderType.SELL, price = 100.toBigInteger())
+            registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+            addInventory("john1", EsopType.PERFORMANCE, 100.toBigInteger())
+            val orderSeller = Order(
+                quantity = 10.toBigInteger(),
+                esopType = EsopType.NORMAL,
+                type = OrderType.SELL,
+                price = 100.toBigInteger()
+            )
             val sellerUsername = "john1"
-            placeOrder(orderSeller,sellerUsername)
+            placeOrder(orderSeller, sellerUsername)
 
-        }catch (e: Exception){
-            assertEquals("Insufficient ESOPs in inventory",e.message)
+        } catch (e: Exception) {
+            assertEquals("Insufficient ESOPs in inventory", e.message)
 
         }
 

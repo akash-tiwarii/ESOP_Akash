@@ -16,8 +16,8 @@ class TaxCalculatorTest {
     @Test
     fun `should calculate the tax as 1 percent for quantity less than 100 and ESOP type is Normal`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 100000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 100.toBigInteger())
@@ -46,8 +46,8 @@ class TaxCalculatorTest {
     @Test
     fun `should calculate the tax as 1 percent for quantity equal to 100 and ESOP type is Normal`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 100000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 100.toBigInteger())
@@ -77,8 +77,8 @@ class TaxCalculatorTest {
     @Test
     fun `should calculate the tax as 1 and quarter percent for quantity greater than 100 but lesser than 50k and ESOP type is NORMAL`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 100000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 200.toBigInteger())
@@ -107,8 +107,8 @@ class TaxCalculatorTest {
     @Test
     fun `should calculate the tax as 1 and quarter percent for quantity equal to 50000 and ESOP type is NORMAL`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 100000000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 50000.toBigInteger())
@@ -137,8 +137,8 @@ class TaxCalculatorTest {
     @Test
     fun `should calculate the tax as 1 and half percent for quantity greater than 50k and ESOP type is NORMAL`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 10000000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 60000.toBigInteger())
@@ -165,8 +165,8 @@ class TaxCalculatorTest {
 
     @Test
     fun `should return 0 as Tax amount if order matching does not happens`() {
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 10000000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 60000.toBigInteger())
@@ -193,8 +193,8 @@ class TaxCalculatorTest {
     @Test
     fun `should calculate the tax as 2 percent for quantity less than 100 and ESOP type is PERFORMANCE`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 100000.toBigInteger())
         addInventory("john2", EsopType.PERFORMANCE, 100.toBigInteger())
@@ -223,8 +223,8 @@ class TaxCalculatorTest {
     @Test
     fun `should calculate the tax as 2 and a quarter percent for quantity greater than 100 and less than or equal to 50k and ESOP type is PERFORMANCE`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 100000.toBigInteger())
         addInventory("john2", EsopType.PERFORMANCE, 120.toBigInteger())
@@ -253,8 +253,8 @@ class TaxCalculatorTest {
     @Test
     fun `should calculate the tax as 2 and a half percent for quantity greater than 50k and ESOP type is PERFORMANCE`() {
 
-        val buyer = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 700000.toBigInteger())
         addInventory("john2", EsopType.PERFORMANCE, 60000.toBigInteger())
@@ -282,8 +282,8 @@ class TaxCalculatorTest {
 
     @Test
     fun `should get the total tax collected by the government so far`() {
-        val buyer1 = registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
-        val seller1 = registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
 
         addWallet("john1", 700000.toBigInteger())
         addInventory("john2", EsopType.NORMAL, 120.toBigInteger())
@@ -303,7 +303,7 @@ class TaxCalculatorTest {
         placeOrder(sellOrder1, seller1name)
 
 
-        val buyer2 = registerUser(Register("john", "doe", "7999999999", "johndoe3@gmail.com", "john3"))
+        registerUser(Register("john", "doe", "7999999999", "johndoe3@gmail.com", "john3"))
 
         addWallet("john3", 700000.toBigInteger())
 
@@ -313,8 +313,6 @@ class TaxCalculatorTest {
 
         val totalTax = getTotalTaxCollected()
 
-        //
-
         assertEquals(8.toBigInteger(), totalTax)
 
     }
@@ -322,8 +320,8 @@ class TaxCalculatorTest {
     @Test
     fun `should get the tax of partially filled order`() {
 
-        val buyer2 = registerUser(Register("john", "doe", "7999999999", "johndoe3@gmail.com", "john3"))
-        val seller2 = registerUser(Register("john", "doe", "9979999998", "johndoe4@gmail.com", "john4"))
+        registerUser(Register("john", "doe", "7999999999", "johndoe3@gmail.com", "john3"))
+        registerUser(Register("john", "doe", "9979999998", "johndoe4@gmail.com", "john4"))
 
         addWallet("john3", 1000000.toBigInteger())
         addInventory("john4", EsopType.PERFORMANCE, 150.toBigInteger())
@@ -356,7 +354,7 @@ class TaxCalculatorTest {
     @Test
     fun `should get 0 tax when only sell order is placed`() {
 
-        val seller2 = registerUser(Register("john", "doe", "9979999998", "johndoe4@gmail.com", "john4"))
+        registerUser(Register("john", "doe", "9979999998", "johndoe4@gmail.com", "john4"))
 
         addInventory("john4", EsopType.PERFORMANCE, 150.toBigInteger())
 
@@ -377,7 +375,7 @@ class TaxCalculatorTest {
     @Test
     fun `should get 0 tax when only buy order is placed`() {
 
-        val buyer2 = registerUser(Register("john", "doe", "7999999999", "johndoe3@gmail.com", "john3"))
+        registerUser(Register("john", "doe", "7999999999", "johndoe3@gmail.com", "john3"))
 
         addWallet("john3", 1000000.toBigInteger())
 

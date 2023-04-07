@@ -12,16 +12,22 @@ import java.math.RoundingMode
 
 var totalTaxDeductionAfterTransaction: BigInteger = BigInteger.ZERO
 
+private const val TAX_SLAB_FOR_ONE_TO_HUNDRED = "1-100"
+
+private const val TAX_SLAB_FOR_HUNDRED_TO_50K = "101-50k"
+
+private const val TAX_SLAB_FOR_GREATER_THAN_50K = "greaterThan50k"
+
 val taxBracket: Map<EsopType, Map<String, BigDecimal>> = mapOf(
     EsopType.NORMAL to mapOf(
-        "1-100" to 1.toBigDecimal(),
-        "101-50k" to 1.25.toBigDecimal(),
-        "greaterThan50k" to 1.5.toBigDecimal()
+        TAX_SLAB_FOR_ONE_TO_HUNDRED to 1.toBigDecimal(),
+        TAX_SLAB_FOR_HUNDRED_TO_50K to 1.25.toBigDecimal(),
+        TAX_SLAB_FOR_GREATER_THAN_50K to 1.5.toBigDecimal()
     ),
     EsopType.PERFORMANCE to mapOf(
-        "1-100" to 2.toBigDecimal(),
-        "101-50k" to 2.25.toBigDecimal(),
-        "greaterThan50k" to 2.5.toBigDecimal()
+        TAX_SLAB_FOR_ONE_TO_HUNDRED to 2.toBigDecimal(),
+        TAX_SLAB_FOR_HUNDRED_TO_50K to 2.25.toBigDecimal(),
+        TAX_SLAB_FOR_GREATER_THAN_50K to 2.5.toBigDecimal()
     )
 )
 
@@ -161,3 +167,13 @@ fun getTotalTaxCollected(): BigInteger {
     return totalTaxCollected
 }
 
+// Have to change it later from ifs to
+private fun getTaxSlabForQuantity(quantity: BigInteger): String {
+    if (quantity <= BigInteger("100")) {
+        return TAX_SLAB_FOR_ONE_TO_HUNDRED
+    }
+    if (quantity <= BigInteger("50000")) {
+        return TAX_SLAB_FOR_HUNDRED_TO_50K
+    }
+    return TAX_SLAB_FOR_GREATER_THAN_50K
+}

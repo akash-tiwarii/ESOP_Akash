@@ -18,16 +18,20 @@ private const val TAX_SLAB_FOR_HUNDRED_TO_50K = "101-50k"
 
 private const val TAX_SLAB_FOR_GREATER_THAN_50K = "greaterThan50k"
 
-val taxBracket: Map<EsopType, Map<String, BigDecimal>> = mapOf(
+private const val TAX_PERCENTAGE = "taxPercentage"
+
+private const val LIMIT = "limit"
+
+val taxBracket: Map<EsopType, Map<String, Map<String,BigDecimal>>> = mapOf(
     EsopType.NORMAL to mapOf(
-        TAX_SLAB_FOR_ONE_TO_HUNDRED to 1.toBigDecimal(),
-        TAX_SLAB_FOR_HUNDRED_TO_50K to 1.25.toBigDecimal(),
-        TAX_SLAB_FOR_GREATER_THAN_50K to 1.5.toBigDecimal()
+        TAX_SLAB_FOR_ONE_TO_HUNDRED to mapOf(TAX_PERCENTAGE to 0.01.toBigDecimal(), LIMIT to 20.toBigDecimal()),
+        TAX_SLAB_FOR_HUNDRED_TO_50K to mapOf(TAX_PERCENTAGE to 0.0125.toBigDecimal(), LIMIT to 20.toBigDecimal()),
+        TAX_SLAB_FOR_GREATER_THAN_50K to mapOf(TAX_PERCENTAGE to 0.015.toBigDecimal(), LIMIT to Long.MAX_VALUE.toBigDecimal())
     ),
     EsopType.PERFORMANCE to mapOf(
-        TAX_SLAB_FOR_ONE_TO_HUNDRED to 2.toBigDecimal(),
-        TAX_SLAB_FOR_HUNDRED_TO_50K to 2.25.toBigDecimal(),
-        TAX_SLAB_FOR_GREATER_THAN_50K to 2.5.toBigDecimal()
+        TAX_SLAB_FOR_ONE_TO_HUNDRED to mapOf(TAX_PERCENTAGE to 0.02.toBigDecimal(), LIMIT to 50.toBigDecimal()),
+        TAX_SLAB_FOR_HUNDRED_TO_50K to mapOf(TAX_PERCENTAGE to 0.0225.toBigDecimal(), LIMIT to Long.MAX_VALUE.toBigDecimal()),
+        TAX_SLAB_FOR_GREATER_THAN_50K to mapOf(TAX_PERCENTAGE to 0.025.toBigDecimal(), LIMIT to Long.MAX_VALUE.toBigDecimal())
     )
 )
 
@@ -83,72 +87,33 @@ private fun updateSellerWalletAndInventory(
 ) {
     seller.inventory[esopType.ordinal].locked -= saleQuantity
 
-
-    if (esopType == EsopType.NORMAL) {
-        totalTaxDeductionAfterTransaction = calculateTaxNormalTransaction(saleQuantity, salePrice)
-    }
-    if (esopType == EsopType.PERFORMANCE) {
-        totalTaxDeductionAfterTransaction = calculateTaxPerformanceTransaction(saleQuantity, salePrice)
-
-    }
+    totalTaxDeductionAfterTransaction = calculateTaxAfterTransaction(esopType, saleQuantity, salePrice)
 
     seller.wallet.free += actualMoneyExchanged - totalTaxDeductionAfterTransaction
     totalTaxCollected += totalTaxDeductionAfterTransaction
 }
 
 
-fun calculateTaxNormalTransaction(saleQuantity: BigInteger, salePrice: BigInteger): BigInteger {
-    if (saleQuantity > BigInteger.ZERO && saleQuantity <= 100.toBigInteger()) {
-        totalTaxDeductionAfterTransaction =
-            (saleQuantity.toBigDecimal() * salePrice.toBigDecimal() * (0.01).toBigDecimal()).setScale(
-                0,
-                RoundingMode.UP
-            ).toBigInteger()
-        totalTaxDeductionAfterTransaction = totalTaxDeductionAfterTransaction.min(BigInteger("20"))
-    }
-    if (saleQuantity > 100.toBigInteger() && saleQuantity <= 50000.toBigInteger()) {
-        totalTaxDeductionAfterTransaction =
-            ((saleQuantity.toBigDecimal() * salePrice.toBigDecimal()) * (0.0125).toBigDecimal()).setScale(
-                0,
-                RoundingMode.UP
-            ).toBigInteger()
-        totalTaxDeductionAfterTransaction = totalTaxDeductionAfterTransaction.min(BigInteger("20"))
-    }
-    if (saleQuantity > 50000.toBigInteger()) {
-        totalTaxDeductionAfterTransaction =
-            ((saleQuantity.toBigDecimal() * salePrice.toBigDecimal()) * (0.015).toBigDecimal()).setScale(
-                0,
-                RoundingMode.UP
-            ).toBigInteger()
-    }
-    return totalTaxDeductionAfterTransaction
+private fun calculateTaxAfterTransaction(
+    esopType: EsopType,
+    saleQuantity: BigInteger,
+    salePrice: BigInteger
+): BigInteger {
+
+
+    val taxSlab = taxBracket[esopType]?.get(
+        getTaxSlabForQuantity(
+            quantity = saleQuantity
+        )
+    )
+    totalTaxDeductionAfterTransaction =
+        (saleQuantity.toBigDecimal() * salePrice.toBigDecimal() * (taxSlab?.get(TAX_PERCENTAGE)!!)).setScale(
+            0,
+            RoundingMode.UP
+        ).toBigInteger()
+    return totalTaxDeductionAfterTransaction.min(taxSlab[LIMIT]!!.toBigInteger())
 }
 
-fun calculateTaxPerformanceTransaction(saleQuantity: BigInteger, salePrice: BigInteger): BigInteger {
-    if (saleQuantity > BigInteger.ZERO && saleQuantity <= 100.toBigInteger()) {
-        totalTaxDeductionAfterTransaction =
-            (saleQuantity.toBigDecimal() * salePrice.toBigDecimal() * (0.02).toBigDecimal()).setScale(
-                0,
-                RoundingMode.UP
-            ).toBigInteger()
-        totalTaxDeductionAfterTransaction = totalTaxDeductionAfterTransaction.min(BigInteger("50"))
-    }
-    if (saleQuantity > 100.toBigInteger() && saleQuantity <= 50000.toBigInteger()) {
-        totalTaxDeductionAfterTransaction =
-            ((saleQuantity.toBigDecimal() * salePrice.toBigDecimal()) * (0.0225).toBigDecimal()).setScale(
-                0,
-                RoundingMode.UP
-            ).toBigInteger()
-    }
-    if (saleQuantity > 50000.toBigInteger()) {
-        totalTaxDeductionAfterTransaction =
-            ((saleQuantity.toBigDecimal() * salePrice.toBigDecimal()) * (0.025).toBigDecimal()).setScale(
-                0,
-                RoundingMode.UP
-            ).toBigInteger()
-    }
-    return totalTaxDeductionAfterTransaction
-}
 
 private fun updateBuyerWalletAndInventory(
     buyer: AccountInfo, salePrice: BigInteger, saleQuantity: BigInteger,

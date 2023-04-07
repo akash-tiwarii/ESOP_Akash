@@ -43,6 +43,37 @@ class TaxCalculatorTest {
 
     }
 
+
+    @Test
+    fun `should calculate the tax as 1 percent for quantity less than 100 and ESOP type is Normal (calculated tax is greater than 20 min(20,calculated tax))`() {
+
+        registerUser(Register("john", "doe", "9999999999", "johndoe1@gmail.com", "john1"))
+        registerUser(Register("john", "doe", "9999999998", "johndoe2@gmail.com", "john2"))
+
+        addWallet("john1", 100000.toBigInteger())
+        addInventory("john2", EsopType.NORMAL, 100.toBigInteger())
+
+        val orderBuyer = Order(quantity = 100.toBigInteger(), type = OrderType.BUY, price = 100.toBigInteger())
+        val buyerUsername = "john1"
+        placeOrder(orderBuyer, buyerUsername)
+
+        val orderSeller = Order(
+            quantity = 80.toBigInteger(),
+            type = OrderType.SELL,
+            esopType = EsopType.NORMAL,
+            price = 100.toBigInteger()
+        )
+
+
+        val sellerUsername = "john2"
+        placeOrder(orderSeller, sellerUsername)
+
+        val totalTax = getTaxCollectedFromTransaction()
+
+        assertEquals(20.toBigInteger(), totalTax)
+
+    }
+
     @Test
     fun `should calculate the tax as 1 percent for quantity equal to 100 and ESOP type is Normal`() {
 

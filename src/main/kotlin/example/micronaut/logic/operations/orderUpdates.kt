@@ -12,6 +12,20 @@ import java.math.RoundingMode
 
 var totalTaxDeductionAfterTransaction: BigInteger = BigInteger.ZERO
 
+val taxBracket: Map<EsopType, Map<String, BigDecimal>> = mapOf(
+    EsopType.NORMAL to mapOf(
+        "1-100" to 1.toBigDecimal(),
+        "101-50k" to 1.25.toBigDecimal(),
+        "greaterThan50k" to 1.5.toBigDecimal()
+    ),
+    EsopType.PERFORMANCE to mapOf(
+        "1-100" to 2.toBigDecimal(),
+        "101-50k" to 2.25.toBigDecimal(),
+        "greaterThan50k" to 2.5.toBigDecimal()
+    )
+)
+
+
 fun orderUpdates(esopType: EsopType, saleQuantity: BigInteger, salePrice: BigInteger) {
     val percentOfMoneyToAdd = 0.98.toBigDecimal()
 
